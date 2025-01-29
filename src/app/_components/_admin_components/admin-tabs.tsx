@@ -132,7 +132,7 @@ export default async function Tabs(props: Props) {
             </div>
           </div>
         </div>
-        {!categoryFromProps &&
+        {!categoryFromProps ? (
           FoodCategory.map((categor: Dish, index: number) => (
             <div
               key={categor._id}
@@ -148,7 +148,10 @@ export default async function Tabs(props: Props) {
                 <Card categoryName={categor.name} categoryId={categor._id} />
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div>Loading</div>
+        )}
         {/* {FoodCategory.map((cate: Dish) => {
           // let isFound = false;
           if (cate._id !== categoryFromProps) {
@@ -156,30 +159,31 @@ export default async function Tabs(props: Props) {
           }
         })} */}
         <Suspense>
-          {oneC &&
-            oneC.map((categor: Dish, index: number) => {
-              return (
-                <div
-                  key={categor._id}
-                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
-                >
-                  <div className="text-foreground text-xl flex justify-between font-extrabold ">
-                    <div>
-                      {index + 1 + ". "}
-                      {categor.name}
-                    </div>
+          {oneC ? (
+            oneC.map((categor: Dish, index: number) => (
+              <div
+                key={categor._id}
+                className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
+              >
+                <div className="text-foreground text-xl flex justify-between font-extrabold ">
+                  <div>
+                    {index + 1 + ". "}
+                    {categor.name}
+                  </div>
 
-                    <DeleteButton categor={categor} />
-                  </div>
-                  <div className="flex flex-wrap gap-4 justify-center">
-                    <AdminCard
-                      categoryName={categor.name}
-                      categoryId={categor._id}
-                    />
-                  </div>
+                  <DeleteButton categor={categor} />
                 </div>
-              );
-            })}
+                <div className="flex flex-wrap gap-4 justify-center">
+                  <AdminCard
+                    categoryName={categor.name}
+                    categoryId={categor._id}
+                  />
+                </div>
+              </div>
+            ))
+          ) : (
+            <div>Loading</div>
+          )}
         </Suspense>
       </div>
     );

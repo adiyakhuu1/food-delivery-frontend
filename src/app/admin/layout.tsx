@@ -34,7 +34,7 @@ export default function RootLayout({
           <div>
             <div className="flex flex-col items-center">
               <div>Not an admin switch or sign in!</div>
-
+              <SignInButton />
               <div>
                 <Pfp />
               </div>

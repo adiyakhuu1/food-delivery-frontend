@@ -70,22 +70,30 @@ export default function DeliveryAddress(props: Props) {
             <IoIosArrowForward />
           </Button>
         </DialogTrigger>
-        <DialogContent className="w-[664px] h-80 flex flex-col">
-          <DialogTitle>Delivery address</DialogTitle>
-          <textarea
-            onChange={(e) => {
-              setAddress(e.target.value);
-            }}
-            className="w-[432px] h-[112px]"
-          />
-          <DialogClose asChild>
-            <div>Close</div>
-          </DialogClose>
-          <DialogClose asChild>
-            <div>
-              <button onClick={onSave}>Save</button>
-            </div>
-          </DialogClose>
+        <DialogContent className="w-full h-80 flex flex-col">
+          <div className="flex flex-col w-full h-full gap-5">
+            <DialogTitle>Delivery address</DialogTitle>
+            <textarea
+              onChange={(e) => {
+                setAddress(e.target.value);
+              }}
+              className="w-full border border-black/20 h-full justify-self-center"
+            />
+          </div>
+          <div className="flex justify-end items-end gap-2 h-full">
+            <DialogClose asChild>
+              <div>
+                <Button className="bg-secondary text-foreground hover:text-background">
+                  Close
+                </Button>
+              </div>
+            </DialogClose>
+            <DialogClose asChild>
+              <div>
+                <Button onClick={onSave}>Save</Button>
+              </div>
+            </DialogClose>
+          </div>
         </DialogContent>
       </Dialog>
     </>

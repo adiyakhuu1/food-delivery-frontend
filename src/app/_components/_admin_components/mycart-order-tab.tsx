@@ -56,7 +56,7 @@ export default function OrderTab(props: Props) {
   console.log(foodOrders);
   return (
     <>
-      <div className="bg-background h-[440px] w-[336px] border rounded-2xl p-2 overflow-scroll scrollbar-none box-content justify-items-center">
+      <div className="bg-background min-h-[440px] w-[336px] border rounded-2xl p-2 gap-9 overflow-scroll scrollbar-none box-content justify-items-center">
         <Suspense fallback={<div>Loading</div>}>
           {!foodOrders ? (
             <div>Loading</div>

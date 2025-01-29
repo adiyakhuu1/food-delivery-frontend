@@ -2,9 +2,12 @@
 
 import { foodOrderItems } from "@/app/_components/contexts/OrderContext";
 import { user } from "@/app/_components/custom-hooks/user-hooks";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@clerk/nextjs";
 import { ColumnDef } from "@tanstack/react-table";
+import { revalidatePath } from "next/cache";
+import Link from "next/link";
 import React, { useEffect } from "react";
 
 // This type is used to define the shape of our data.
@@ -53,6 +56,7 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
   },
   {
     accessorKey: "createdAt",
+
     header: "Date",
   },
   {
@@ -100,5 +104,34 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
     ),
     // header: "Status",
     header: "Status",
+  },
+  {
+    // id: "select",
+    accessorKey: "Delete",
+    cell: (event) => (
+      <Link href={`admin?page=orders`}>
+        <Button
+          defaultValue={event.cell.row.original.status}
+          className={`p-2 rounded-full border bg-background text-foreground text-xs  font-bold hover:text-background`}
+          onClick={async (e) => {
+            // const { getToken } = useAuth();
+            // const token = await getToken();
+            console.log(e);
+            const send = await fetch(
+              `https://food-delivery-backend-q4dy.onrender.com/foodOrder/${event.cell.row.original._id}`,
+              {
+                method: "DELETE",
+                headers: { auth: token, "Content-Type": "application/json" },
+              }
+            );
+            const response = await send.json();
+          }}
+        >
+          Delete
+        </Button>
+      </Link>
+    ),
+    // header: "Status",
+    header: "Delete",
   },
 ];
