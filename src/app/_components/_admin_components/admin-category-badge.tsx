@@ -16,12 +16,9 @@ export default function AdminCategory(props: Props) {
   const [count, setCount] = useState<number>(0);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/food/${id}`,
-        {
-          method: "GET",
-        }
-      );
+      const recCate = await fetch(`${process.env.DB_URL}/food/${id}`, {
+        method: "GET",
+      });
       const categorizedFoods: Food[] = await recCate.json();
       setCount(categorizedFoods.length);
     };

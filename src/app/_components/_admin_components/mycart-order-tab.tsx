@@ -38,7 +38,7 @@ export default function OrderTab(props: Props) {
     const fetchdata = async () => {
       if (token) {
         const res = await fetch(
-          `https://food-delivery-backend-q4dy.onrender.com/foodorder/${props.userInfo.userExists._id}`,
+          `${process.env.DB_URL}/foodorder/${props.userInfo.userExists._id}`,
           {
             method: "GET",
             headers: {

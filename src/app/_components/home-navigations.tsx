@@ -65,19 +65,16 @@ export default function Navigaion() {
   }, [success]);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/account/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: user?.emailAddresses[0].emailAddress,
-            password: user?.id,
-          }),
-        }
-      );
+      const res = await fetch(`${process.env.DB_URL}/account/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user?.emailAddresses[0].emailAddress,
+          password: user?.id,
+        }),
+      });
       const data = await res.json();
       setUserInfo(data);
       console.log("checking", data);
@@ -100,7 +97,7 @@ export default function Navigaion() {
   // useEffect(() => {
   //   const fetchdata = async () => {
   //     const fetchd = await fetch(
-  //       `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
+  //       `${process.env.DB_URL}/account/67933be24b8118f8d9c34b34`,
   //       { method: "GET" }
   //     );
   //     const data = await fetchd.json();
@@ -119,17 +116,14 @@ export default function Navigaion() {
     console.log("user", user);
     console.log("order", order);
     if (user) {
-      const senddata = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/foodOrder`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            auth: token,
-          },
-          body: JSON.stringify(form),
-        }
-      );
+      const senddata = await fetch(`${process.env.DB_URL}/foodOrder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify(form),
+      });
       const response = await senddata.json();
       setResponse(response.message);
       if (response.message === "success") {

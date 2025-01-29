@@ -23,7 +23,7 @@ export const useUserHook = () => {
       try {
         if (token) {
           const fetchd = await fetch(
-            `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
+            `${process.env.DB_URL}/account/67933be24b8118f8d9c34b34`,
             {
               method: "GET",
               headers: {
@@ -44,6 +44,7 @@ export const useUserHook = () => {
         }
       }
     };
+    console.log(token);
     if (token) {
       fetchdata();
     }
@@ -51,5 +52,5 @@ export const useUserHook = () => {
       isMounted = false;
     };
   }, [token]);
-  return { user, token, Loading };
+  return { user };
 };

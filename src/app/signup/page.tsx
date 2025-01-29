@@ -41,31 +41,25 @@ export default function Login() {
   };
 
   const handleSignUp = async () => {
-    const res = await fetch(
-      `https://food-delivery-backend-q4dy.onrender.com/account/signup`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      }
-    );
+    const res = await fetch(`${process.env.DB_URL}/account/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
     const data = await res.json();
     setResponse(data.message);
     console.log(response);
   };
   const handleSignIn = async () => {
-    const res = await fetch(
-      `https://food-delivery-backend-q4dy.onrender.com/account/signup`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      }
-    );
+    const res = await fetch(`${process.env.DB_URL}/account/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
     const data = await res.json();
     console.log(data);
   };

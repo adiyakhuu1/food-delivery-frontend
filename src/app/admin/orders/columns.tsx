@@ -83,7 +83,7 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
           // const token = await getToken();
           console.log(e);
           const send = await fetch(
-            `https://food-delivery-backend-q4dy.onrender.com/foodOrder/${event.cell.row.original._id}`,
+            `${process.env.DB_URL}/foodOrder/${event.cell.row.original._id}`,
             {
               method: "PUT",
               headers: { auth: token, "Content-Type": "application/json" },
@@ -118,7 +118,7 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
             // const token = await getToken();
             console.log(e);
             const send = await fetch(
-              `https://food-delivery-backend-q4dy.onrender.com/foodOrder/${event.cell.row.original._id}`,
+              `${process.env.DB_URL}/foodOrder/${event.cell.row.original._id}`,
               {
                 method: "DELETE",
                 headers: { auth: token, "Content-Type": "application/json" },

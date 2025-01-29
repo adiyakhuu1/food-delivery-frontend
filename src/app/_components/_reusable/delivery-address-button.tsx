@@ -15,6 +15,7 @@ import { useTokenContext } from "../contexts/tokenContext";
 import { useUserHook } from "../custom-hooks/user-hooks";
 import { useTokenHook } from "../custom-hooks/token-hook";
 import { userInfo } from "os";
+import { useAuth } from "@clerk/nextjs";
 export type userInfo = {
   message: string;
   userExists: {
@@ -34,29 +35,38 @@ type Props = {
   userInfo: userInfo;
 };
 export default function DeliveryAddress(props: Props) {
+  const { getToken } = useAuth();
   const [address, setAddress] = useState("");
-  const { user, Loading } = useUserHook();
+  // const [token, setToken] = useState("");
+  const { user } = useUserHook();
   const { token } = useTokenHook();
+
+  // useEffect(() => {
+  //   const f = async () => {
+  //     const tokeen = await getToken();
+  //     if (tokeen) {
+  //       setToken(tokeen);
+  //     }
+  //   };
+  // }, []);
   const onSave = async () => {
     if (token) {
       const fetchD = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/account/${props.userInfo.userExists._id}`,
+        `${process.env.DB_URL}/account/${props.userInfo.userExists._id}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             auth: token,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            ...user,
-            address,
-          }),
+          body: JSON.stringify(address),
         }
       );
       const response = await fetchD.json();
       console.log(response);
     }
   };
+  console.log("checking address button", user);
   return (
     <>
       <Dialog>

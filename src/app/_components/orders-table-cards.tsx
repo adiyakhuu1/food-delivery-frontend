@@ -83,15 +83,12 @@ export const DeleteButton = (props: deletebuttonprops) => {
   const searchParams = useSearchParams();
   console.log(path + searchParams);
   const deleteCategory = async (id: string) => {
-    await fetch(
-      `https://food-delivery-backend-q4dy.onrender.com/FoodCategory/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          auth: token,
-        },
-      }
-    );
+    await fetch(`${process.env.DB_URL}/FoodCategory/${id}`, {
+      method: "DELETE",
+      headers: {
+        auth: token,
+      },
+    });
   };
   return (
     <>

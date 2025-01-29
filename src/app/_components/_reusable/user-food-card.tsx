@@ -62,12 +62,9 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   }, [alert]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/food/${categoryId}`,
-        {
-          method: "GET",
-        }
-      );
+      const recCate = await fetch(`${process.env.DB_URL}/food/${categoryId}`, {
+        method: "GET",
+      });
       const categorizedFoods: Food[] = await recCate.json();
       setFoods(categorizedFoods);
     };
@@ -75,12 +72,9 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   }, [ref]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/foodCategory`,
-        {
-          method: "GET",
-        }
-      );
+      const recCate = await fetch(`${process.env.DB_URL}/foodCategory`, {
+        method: "GET",
+      });
       const categories: Dish[] = await recCate.json();
       setAllCategory(categories);
     };
@@ -88,16 +82,13 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   }, [ref]);
 
   const handleClick = async () => {
-    const recCate = await fetch(
-      `https://food-delivery-backend-q4dy.onrender.com/foodOrderItem`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ food: getFoodId, quantity: count }),
-      }
-    );
+    const recCate = await fetch(`${process.env.DB_URL}/foodOrderItem`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ food: getFoodId, quantity: count }),
+    });
     const orderr = await recCate.json();
     setOrderRespone(orderr);
   };
