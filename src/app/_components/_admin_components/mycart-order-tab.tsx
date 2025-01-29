@@ -6,6 +6,7 @@ import { Order } from "@/app/admin/orders/columns";
 import { foodOrderItems } from "../contexts/OrderContext";
 import { useClerk } from "@clerk/nextjs";
 import { userInfo } from "../_reusable/delivery-address-button";
+import Image from "next/image";
 type foodOrder = {
   _id: string;
   user: {
@@ -33,7 +34,6 @@ type Props = {
 export default function OrderTab(props: Props) {
   const { token } = useTokenHook();
   const [foodOrders, setFoodOrders] = useState<foodOrder[]>([]);
-  const { user } = useClerk();
   useEffect(() => {
     const fetchdata = async () => {
       if (token) {
@@ -56,41 +56,59 @@ export default function OrderTab(props: Props) {
   console.log(foodOrders);
   return (
     <>
-      {foodOrders.map((food) => (
-        <div
-          key={food._id}
-          className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col gap-4 justify-center"
-        >
-          <div className="flex justify-between">
-            <div className="flex font-bold">
-              <div>{food.totalPrice}</div>
-              {/* <div>{food._id}</div> */}
-            </div>
-            <div className="border text-xs content-center border-red-500 text-center rounded-full space-x-1 px-[10px]">
-              {food.status}
-            </div>
+      <div className="bg-background h-[440px] w-[336px] border rounded-2xl p-2 overflow-scroll scrollbar-none box-content justify-items-center">
+        {foodOrders.length <= 0 ? (
+          <div className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col items-center gap-4 justify-center">
+            <Image
+              src={`/img/delivering-icon.svg`}
+              alt="icon"
+              width={61}
+              height={50}
+            />
+            <h2 className="text-foreground font-bold">No Orders Yet? </h2>
+            <p className="text-xs text-center">
+              🍕 "You haven't placed any orders yet. Start exploring our menu
+              and satisfy your cravings!"
+            </p>
           </div>
-          <div className="flex flex-col gap-3 overflow-hidden">
-            {food.foodOrderItems &&
-              food.foodOrderItems.map((one) => (
-                <div
-                  key={one.food}
-                  className="flex justify-between text-muted-foreground text-xs"
-                >
-                  <div>{one.foodName}</div>
-                  <div>x{one.quantity}</div>
+        ) : (
+          foodOrders.map((food) => (
+            <div
+              key={food._id}
+              className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col gap-4 justify-center"
+            >
+              <div className="flex justify-between">
+                <div className="flex font-bold">
+                  <div>{food.totalPrice}</div>
+                  {/* <div>{food._id}</div> */}
                 </div>
-              ))}
+                <div className="border text-xs content-center border-red-500 text-center rounded-full space-x-1 px-[10px]">
+                  {food.status}
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 overflow-hidden">
+                {food.foodOrderItems &&
+                  food.foodOrderItems.map((one) => (
+                    <div
+                      key={one.food}
+                      className="flex justify-between text-muted-foreground text-xs"
+                    >
+                      <div>{one.foodName}</div>
+                      <div>x{one.quantity}</div>
+                    </div>
+                  ))}
 
-            <div className="flex justify-between text-muted-foreground text-xs">
-              <div>{food.createdAt}</div>
+                <div className="flex justify-between text-muted-foreground text-xs">
+                  <div>{food.createdAt}</div>
+                </div>
+                <div className="flex justify-between text-muted-foreground text-xs">
+                  <div className="truncate">{food.user.address}</div>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between text-muted-foreground text-xs">
-              <div className="truncate">{food.user.address}</div>
-            </div>
-          </div>
-        </div>
-      ))}
+          ))
+        )}
+      </div>
     </>
   );
 }

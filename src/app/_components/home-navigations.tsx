@@ -38,6 +38,7 @@ export default function Navigaion() {
   const [userInfo, setUserInfo] = useState<userInfo>();
   const { order, setOrder } = useCartContext();
   const { foodsInfo, setFoodsInfo } = useFoodContext();
+  const [success, setSucces] = useState(false);
   const [isFailed, setFailed] = useState<boolean>(false);
   const { getToken } = useAuth();
 
@@ -54,6 +55,14 @@ export default function Navigaion() {
   const { price } = calculateTotalPrice();
   const { totalPrice } = calculateTotalPrice();
   const { user } = useClerk();
+  useEffect(() => {
+    let interval = setTimeout(() => {
+      setSucces(false);
+    }, 2000);
+    return () => {
+      clearTimeout(interval);
+    };
+  }, [success]);
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
@@ -107,7 +116,7 @@ export default function Navigaion() {
   };
 
   const addOrder = async () => {
-    console.log("form", form);
+    console.log("user", user);
     console.log("order", order);
     if (user) {
       const senddata = await fetch(
@@ -123,17 +132,22 @@ export default function Navigaion() {
       );
       const response = await senddata.json();
       setResponse(response.message);
+      if (response.message === "success") {
+        setOrder([]);
+        setFoodsInfo([]);
+      }
     } else {
       alert("Please login!");
     }
   };
   const onDelete = (id: string) => {
-    const findOne: foods[] = foodsInfo.filter((food) => food._id !== id);
+    const findfood: foods[] = foodsInfo.filter((food) => food._id !== id);
     const findOrder: foodOrderItems[] = order.filter((ord) => ord.food !== id);
-    setFoodsInfo(findOne);
+    setFoodsInfo(findfood);
     setOrder(findOrder);
   };
-
+  console.log("email", user?.emailAddresses[0].emailAddress);
+  console.log("order", order);
   return (
     <div className="bg-primary h-17 w-full justify-items-center">
       <div className="flex items-center justify-between w-[90%]">
@@ -267,6 +281,33 @@ export default function Navigaion() {
                                 </div>
                               </div>
                             ))}
+                            {foodsInfo.length <= 0 && (
+                              <div className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col items-center gap-4 justify-center">
+                                {success ? (
+                                  <div>Order Success</div>
+                                ) : (
+                                  <>
+                                    <Image
+                                      src={`/img/delivering-icon.svg`}
+                                      alt="icon"
+                                      width={61}
+                                      height={50}
+                                    />
+                                    <h2 className="text-foreground font-bold">
+                                      No Orders Yet?{" "}
+                                    </h2>
+                                    <p className="text-xs text-center">
+                                      🍕 "You haven't placed any orders yet.
+                                      Start exploring our menu and satisfy your
+                                      cravings!"
+                                    </p>
+                                  </>
+                                )}
+                              </div>
+                              // <div className="text-center  font-extrabold my-20">
+                              //   Order success
+                              // </div>
+                            )}
                           </div>
                         </div>
 
@@ -294,8 +335,13 @@ export default function Navigaion() {
                         </div>
                         <div
                           onClick={() => {
-                            addOrder();
-                            setFailed(true);
+                            if (order.length < 0) {
+                              return;
+                            } else {
+                              addOrder();
+                              setFailed(true);
+                              setSucces(true);
+                            }
                           }}
                           className="bottom-2 absolute border border-red-500 w-10/12 rounded-full justify-center flex right-1/2 left-1/2 transform -translate-x-1/2 cursor-pointer"
                         >
@@ -316,28 +362,8 @@ export default function Navigaion() {
                   <TabsContent value="order">
                     <div className="bg-background h-[440px] w-[336px] border rounded-2xl p-2 overflow-scroll scrollbar-none box-content justify-items-center">
                       <div className="justify-self-start">Order history</div>
-                      {order.length === 0 && (
-                        <div className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col items-center gap-4 justify-center">
-                          <Image
-                            src={`/img/delivering-icon.svg`}
-                            alt="icon"
-                            width={61}
-                            height={50}
-                          />
-                          <h2 className="text-foreground font-bold">
-                            No Orders Yet?{" "}
-                          </h2>
-                          <p className="text-xs text-center">
-                            🍕 "You haven't placed any orders yet. Start
-                            exploring our menu and satisfy your cravings!"
-                          </p>
-                        </div>
-                      )}
-                      {order.length > 0 && (
-                        <div>
-                          {userInfo && <OrderTab userInfo={userInfo} />}
-                        </div>
-                      )}
+
+                      {userInfo && <OrderTab userInfo={userInfo} />}
                     </div>
                   </TabsContent>
                 </Tabs>
