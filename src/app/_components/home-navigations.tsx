@@ -6,8 +6,8 @@ import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { Pfp } from "./_reusable/pfp";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
-import DeliveryAddress from "./_reusable/delivery-address-button";
+import { SignedIn, SignedOut, useAuth, useClerk } from "@clerk/nextjs";
+import DeliveryAddress, { userInfo } from "./_reusable/delivery-address-button";
 import Cart from "./_reusable/cart-button";
 import {
   Sheet,
@@ -30,11 +30,12 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Food } from "./_admin_components/admin-tabs";
 import OrderTab from "./_admin_components/mycart-order-tab";
+import Link from "next/link";
 export default function Navigaion() {
   const [count, setCount] = useState(1);
   const [token, setToken] = useState("");
   const [response, setResponse] = useState("");
-  const [user, setUser] = useState();
+  const [userInfo, setUserInfo] = useState<userInfo>();
   const { order, setOrder } = useCartContext();
   const { foodsInfo, setFoodsInfo } = useFoodContext();
   const [isFailed, setFailed] = useState<boolean>(false);
@@ -52,6 +53,28 @@ export default function Navigaion() {
   };
   const { price } = calculateTotalPrice();
   const { totalPrice } = calculateTotalPrice();
+  const { user } = useClerk();
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/account/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user?.emailAddresses[0].emailAddress,
+            password: user?.id,
+          }),
+        }
+      );
+      const data = await res.json();
+      setUserInfo(data);
+      console.log("checking", data);
+    };
+    fetchData();
+  }, [user]);
   // const [form, setForm] = useState({
   useEffect(() => {
     setFailed(false);
@@ -65,20 +88,20 @@ export default function Navigaion() {
     };
     dosomething();
   }, []);
-  useEffect(() => {
-    const fetchdata = async () => {
-      const fetchd = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
-        { method: "GET" }
-      );
-      const data = await fetchd.json();
-      setUser(data);
-    };
-    fetchdata();
-  }, []);
+  // useEffect(() => {
+  //   const fetchdata = async () => {
+  //     const fetchd = await fetch(
+  //       `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
+  //       { method: "GET" }
+  //     );
+  //     const data = await fetchd.json();
+  //     setUser(data);
+  //   };
+  //   fetchdata();
+  // }, []);
   // });
   const form = {
-    user: "6799e147eb34f865928f8667",
+    user: userInfo?.userExists._id,
     totalPrice: totalPrice,
     foodOrderItems: order,
   };
@@ -86,19 +109,23 @@ export default function Navigaion() {
   const addOrder = async () => {
     console.log("form", form);
     console.log("order", order);
-    const senddata = await fetch(
-      `https://food-delivery-backend-q4dy.onrender.com/foodOrder`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          auth: token,
-        },
-        body: JSON.stringify(form),
-      }
-    );
-    const response = await senddata.json();
-    setResponse(response.message);
+    if (user) {
+      const senddata = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/foodOrder`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            auth: token,
+          },
+          body: JSON.stringify(form),
+        }
+      );
+      const response = await senddata.json();
+      setResponse(response.message);
+    } else {
+      alert("Please login!");
+    }
   };
   const onDelete = (id: string) => {
     const findOne: foods[] = foodsInfo.filter((food) => food._id !== id);
@@ -106,14 +133,31 @@ export default function Navigaion() {
     setFoodsInfo(findOne);
     setOrder(findOrder);
   };
+
   return (
     <div className="bg-primary h-17 w-full justify-items-center">
       <div className="flex items-center justify-between w-[90%]">
         <div>
           <Logo style="text-background" />
         </div>
+        {user && (
+          <div className="text-background">
+            <div>Hello. {user.fullName}</div>
+
+            {user.publicMetadata.role === `admin` && (
+              <Link
+                href={`/admin?page=food+menu`}
+                className="text-xs border border-red-300 hover:border-red-500 rounded-lg px-3"
+              >
+                you are an admin. click here
+              </Link>
+            )}
+          </div>
+        )}
+        {/* <div>Hi adiyakhuu</div> */}
         <div className="flex gap-3">
-          <DeliveryAddress />
+          {userInfo && <DeliveryAddress userInfo={userInfo} />}
+
           <Sheet>
             <SheetTrigger>
               <Cart />
@@ -291,7 +335,7 @@ export default function Navigaion() {
                       )}
                       {order.length > 0 && (
                         <div>
-                          <OrderTab />
+                          {userInfo && <OrderTab userInfo={userInfo} />}
                         </div>
                       )}
                     </div>

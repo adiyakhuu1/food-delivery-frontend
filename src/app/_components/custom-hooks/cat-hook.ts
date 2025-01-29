@@ -34,7 +34,6 @@ export const useCategoryHook = () => {
     if (token) {
       fetchData();
     }
-    console.log("checking from cat hook", token);
     return () => {
       isMounted = false;
     };

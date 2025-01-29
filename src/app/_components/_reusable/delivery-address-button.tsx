@@ -14,15 +14,33 @@ import { IoLocationOutline } from "react-icons/io5";
 import { useTokenContext } from "../contexts/tokenContext";
 import { useUserHook } from "../custom-hooks/user-hooks";
 import { useTokenHook } from "../custom-hooks/token-hook";
-
-export default function DeliveryAddress() {
+import { userInfo } from "os";
+export type userInfo = {
+  message: string;
+  userExists: {
+    _id: string;
+    email: string;
+    password: string;
+    phoneNumber: number;
+    address: string;
+    role: string;
+    isVerified: boolean;
+    createdAt: boolean;
+    updatedAt: boolean;
+    __v: number;
+  };
+};
+type Props = {
+  userInfo: userInfo;
+};
+export default function DeliveryAddress(props: Props) {
   const [address, setAddress] = useState("");
   const { user, Loading } = useUserHook();
   const { token } = useTokenHook();
   const onSave = async () => {
     if (token) {
       const fetchD = await fetch(
-        `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
+        `https://food-delivery-backend-q4dy.onrender.com/account/${props.userInfo.userExists._id}`,
         {
           method: "PUT",
           headers: {
@@ -47,8 +65,7 @@ export default function DeliveryAddress() {
             <IoLocationOutline className="text-2xl text-red-500" />
             <div className="text-red-500">Delivery address:</div>
             <div className="text-foreground">
-              {Loading && `not signed in`}
-              {user?.address}
+              {props.userInfo.userExists.address}
             </div>
             <IoIosArrowForward />
           </Button>

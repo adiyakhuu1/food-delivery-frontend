@@ -47,7 +47,6 @@ export const useUserHook = () => {
     if (token) {
       fetchdata();
     }
-    console.log("checking from hook", token);
     return () => {
       isMounted = false;
     };

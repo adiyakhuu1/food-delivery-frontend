@@ -22,6 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const { user } = useClerk();
+  console.log(user);
   return (
     <ClerkProvider>
       <ThemeProvider>

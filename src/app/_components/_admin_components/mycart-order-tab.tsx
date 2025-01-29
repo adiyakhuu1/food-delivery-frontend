@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useTokenHook } from "../custom-hooks/token-hook";
 import { Order } from "@/app/admin/orders/columns";
 import { foodOrderItems } from "../contexts/OrderContext";
+import { useClerk } from "@clerk/nextjs";
+import { userInfo } from "../_reusable/delivery-address-button";
 type foodOrder = {
   _id: string;
   user: {
@@ -25,14 +27,18 @@ type foodOrder = {
   updatedAt: string;
   __v: number;
 };
-export default function OrderTab() {
+type Props = {
+  userInfo: userInfo;
+};
+export default function OrderTab(props: Props) {
   const { token } = useTokenHook();
   const [foodOrders, setFoodOrders] = useState<foodOrder[]>([]);
+  const { user } = useClerk();
   useEffect(() => {
     const fetchdata = async () => {
       if (token) {
         const res = await fetch(
-          `https://food-delivery-backend-q4dy.onrender.com/foodorder/6799e147eb34f865928f8667`,
+          `https://food-delivery-backend-q4dy.onrender.com/foodorder/${props.userInfo.userExists._id}`,
           {
             method: "GET",
             headers: {
