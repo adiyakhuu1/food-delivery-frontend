@@ -83,12 +83,15 @@ export const DeleteButton = (props: deletebuttonprops) => {
   const searchParams = useSearchParams();
   console.log(path + searchParams);
   const deleteCategory = async (id: string) => {
-    await fetch(`http://localhost:5000/FoodCategory/${id}`, {
-      method: "DELETE",
-      headers: {
-        auth: token,
-      },
-    });
+    await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/FoodCategory/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          auth: token,
+        },
+      }
+    );
   };
   return (
     <>
@@ -110,18 +113,21 @@ export const DeleteButton = (props: deletebuttonprops) => {
           <div className="flex justify-center gap-10">
             <DialogClose
               className="text-red-500 border border-border bg-secondary px-10 p-2 rounded-lg content-center"
-              asChild>
+              asChild
+            >
               <Link
                 onClick={() => {
                   deleteCategory(categor._id);
                 }}
-                href={path + "?page=food+menu"}>
+                href={path + "?page=food+menu"}
+              >
                 YES
               </Link>
             </DialogClose>
             <DialogClose
               className="text-background border border-border bg-foreground px-10 p-2 rounded-lg cursor-pointer"
-              asChild>
+              asChild
+            >
               <div>NO</div>
             </DialogClose>
           </div>

@@ -24,16 +24,19 @@ export default function AddCategory() {
   const { token } = useTokenContext();
   const [newCategory, setNewCategory] = useState();
   const handleClick = async () => {
-    const res = await fetch(`http://localhost:5000/FoodCategory/addnew`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify({
-        name,
-      }),
-    });
+    const res = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/FoodCategory/addnew`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify({
+          name,
+        }),
+      }
+    );
     const response = await res.json();
     setNewCategory(response);
   };
@@ -71,7 +74,8 @@ export default function AddCategory() {
               className="bg-foreground text-background flex p-3 rounded-xl"
               onClick={() => {
                 handleClick();
-              }}>
+              }}
+            >
               Save Changes
             </Button>
           </DialogClose>

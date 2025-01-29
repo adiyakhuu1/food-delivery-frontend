@@ -62,9 +62,12 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   }, [alert]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
-        method: "GET",
-      });
+      const recCate = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/food/${categoryId}`,
+        {
+          method: "GET",
+        }
+      );
       const categorizedFoods: Food[] = await recCate.json();
       setFoods(categorizedFoods);
     };
@@ -72,9 +75,12 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   }, [ref]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`http://localhost:5000/foodCategory`, {
-        method: "GET",
-      });
+      const recCate = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/foodCategory`,
+        {
+          method: "GET",
+        }
+      );
       const categories: Dish[] = await recCate.json();
       setAllCategory(categories);
     };
@@ -82,13 +88,16 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   }, [ref]);
 
   const handleClick = async () => {
-    const recCate = await fetch(`http://localhost:5000/foodOrderItem`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ food: getFoodId, quantity: count }),
-    });
+    const recCate = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/foodOrderItem`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ food: getFoodId, quantity: count }),
+      }
+    );
     const orderr = await recCate.json();
     setOrderRespone(orderr);
   };
@@ -105,7 +114,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl"
+        >
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
@@ -120,7 +130,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 console.log(order);
                 // selectedFood(food);
               }}
-              className="">
+              className=""
+            >
               <div>
                 <GoPlus className="absolute top-[40%] bg-background right-4 text-red-500 text-xs w-10 h-10 rounded-full shadow-lg" />
               </div>
@@ -165,7 +176,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p - 1);
                           console.log(count);
-                        }}>
+                        }}
+                      >
                         -
                       </Button>
                       {count}
@@ -174,7 +186,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p + 1);
                           console.log(count);
-                        }}>
+                        }}
+                      >
                         +
                       </Button>
                     </div>
@@ -215,7 +228,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                           }
                           console.log(order);
                         }}
-                        className="w-full rounded-lg bg-primary">
+                        className="w-full rounded-lg bg-primary"
+                      >
                         Add to cart
                       </Button>
                     </DialogClose>

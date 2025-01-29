@@ -79,7 +79,7 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
           // const token = await getToken();
           console.log(e);
           const send = await fetch(
-            `http://localhost:5000/foodOrder/${event.cell.row.original._id}`,
+            `https://food-delivery-backend-q4dy.onrender.com/foodOrder/${event.cell.row.original._id}`,
             {
               method: "PUT",
               headers: { auth: token, "Content-Type": "application/json" },
@@ -91,7 +91,8 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
           );
           const response = await send.json();
           console.log(event.cell.row, e.target.value);
-        }}>
+        }}
+      >
         <option value={`PENDING`}>PENDING</option>
         <option value={`CANCELLED`}>CANCELLED</option>
         <option value={`DELIVERED`}>DELIVERED</option>

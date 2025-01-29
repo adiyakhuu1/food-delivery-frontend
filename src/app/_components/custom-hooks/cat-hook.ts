@@ -11,12 +11,15 @@ export const useCategoryHook = () => {
     console.log("useCategoryHook start");
     const fetchData = async () => {
       try {
-        const recCate = await fetch(`http://localhost:5000/foodCategory`, {
-          method: "GET",
-          headers: {
-            auth: token,
-          },
-        });
+        const recCate = await fetch(
+          `https://food-delivery-backend-q4dy.onrender.com/foodCategory`,
+          {
+            method: "GET",
+            headers: {
+              auth: token,
+            },
+          }
+        );
         const categories: Dish[] = await recCate.json();
         if (isMounted) {
           setAllCategory(categories);

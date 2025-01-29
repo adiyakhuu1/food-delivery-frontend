@@ -23,7 +23,7 @@ export const useUserHook = () => {
       try {
         if (token) {
           const fetchd = await fetch(
-            `http://localhost:5000/account/67933be24b8118f8d9c34b34`,
+            `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
             {
               method: "GET",
               headers: {

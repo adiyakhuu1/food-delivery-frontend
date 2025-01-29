@@ -32,7 +32,7 @@ export default function OrderTab() {
     const fetchdata = async () => {
       if (token) {
         const res = await fetch(
-          `http://localhost:5000/foodorder/6799e147eb34f865928f8667`,
+          `https://food-delivery-backend-q4dy.onrender.com/foodorder/6799e147eb34f865928f8667`,
           {
             method: "GET",
             headers: {
@@ -53,7 +53,8 @@ export default function OrderTab() {
       {foodOrders.map((food) => (
         <div
           key={food._id}
-          className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col gap-4 justify-center">
+          className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col gap-4 justify-center"
+        >
           <div className="flex justify-between">
             <div className="flex font-bold">
               <div>{food.totalPrice}</div>
@@ -68,7 +69,8 @@ export default function OrderTab() {
               food.foodOrderItems.map((one) => (
                 <div
                   key={one.food}
-                  className="flex justify-between text-muted-foreground text-xs">
+                  className="flex justify-between text-muted-foreground text-xs"
+                >
                   <div>{one.foodName}</div>
                   <div>x{one.quantity}</div>
                 </div>

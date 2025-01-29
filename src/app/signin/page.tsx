@@ -29,13 +29,16 @@ export default function Login() {
   };
 
   const handleSignIn = async () => {
-    const res = await fetch(`http://localhost:5000/account/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    const res = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/account/signin`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }
+    );
     const data = await res.json();
     setVerify(data);
     console.log(data);

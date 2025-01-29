@@ -5,7 +5,7 @@ import { DataTable } from "./data-table";
 import { useEffect, useState } from "react";
 
 // async function getData(): Promise<Order[]> {
-//   const res = await fetch(`http://localhost:5000/foodOrder`, { method: "GET" });
+//   const res = await fetch(`https://food-delivery-backend-q4dy.onrender.com/foodOrder`, { method: "GET" });
 //   const orders = await res.json();
 
 //   // Fetch data from your API here.
@@ -21,12 +21,15 @@ export default function Orders() {
       const token = await getToken();
       if (token) {
         setToken(token);
-        const res = await fetch(`http://localhost:5000/foodOrder`, {
-          method: "GET",
-          headers: {
-            auth: token,
-          },
-        });
+        const res = await fetch(
+          `https://food-delivery-backend-q4dy.onrender.com/foodOrder`,
+          {
+            method: "GET",
+            headers: {
+              auth: token,
+            },
+          }
+        );
         const data = await res.json();
         setData(data);
       }

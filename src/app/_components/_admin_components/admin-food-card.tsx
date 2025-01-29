@@ -113,12 +113,15 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   }, [alerts]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
-        method: "GET",
-        headers: {
-          auth: token,
-        },
-      });
+      const recCate = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/food/${categoryId}`,
+        {
+          method: "GET",
+          headers: {
+            auth: token,
+          },
+        }
+      );
       const categorizedFoods: Food[] = await recCate.json();
       setFoods(categorizedFoods);
     };
@@ -126,14 +129,17 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   }, []);
 
   const addnewitem = async () => {
-    const recCate = await fetch(`http://localhost:5000/food`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify(form),
-    });
+    const recCate = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/food`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify(form),
+      }
+    );
     const response = await recCate.json();
     if (response.message !== "success") {
       setAlerts((prev) => ({ ...prev, error: true }));
@@ -143,13 +149,16 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   };
 
   const deleteFood = async () => {
-    const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-    });
+    const recCate = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/food/${getFoodId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+      }
+    );
     const response = await recCate.json();
     if (response.message === "success") {
       setAlerts({
@@ -165,17 +174,20 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     refresh(ref + 1);
   };
   const edititem = async () => {
-    const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify({
-        ...form,
-        image,
-      }),
-    });
+    const recCate = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/food/${getFoodId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify({
+          ...form,
+          image,
+        }),
+      }
+    );
     const response = await recCate.json();
     if (response.message !== "success") {
       setAlerts({
@@ -250,7 +262,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               category: categoryId,
             });
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -331,7 +344,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 }}
                 className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
-                }`}>
+                }`}
+              >
                 Save
               </Button>
             </DialogClose>
@@ -342,7 +356,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
+        >
           {/* edit dialog here */}
 
           <Dialog>
@@ -357,7 +372,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   category: food.category,
                 });
               }}
-              className="">
+              className=""
+            >
               <div>
                 <Image
                   className="absolute top-1/2 right-4 border border-border rounded-full shadow-lg"
@@ -398,7 +414,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         onChangeForm(e);
                         console.log(form);
-                      }}>
+                      }}
+                    >
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -407,7 +424,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background">
+                          className="text-foreground bg-background"
+                        >
                           {cate.name}
                         </option>
                       ))}
@@ -468,7 +486,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       deleteFood();
                     }}
                     href={path + "?" + searchParams}
-                    className=" px-5 p-2 text-foreground">
+                    className=" px-5 p-2 text-foreground"
+                  >
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
@@ -489,7 +508,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       }}
                       className={`px-5 bg-foreground p-2 text-secondary ${
                         !isValid && `cursor-not-allowed bg-muted`
-                      }`}>
+                      }`}
+                    >
                       Save
                     </Button>
                   </DialogClose>

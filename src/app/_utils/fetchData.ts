@@ -9,14 +9,20 @@ export const useFetchDatas = async () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`http://localhost:5000/FoodCategory`, {
-        method: "GET",
-      });
+      const res = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/FoodCategory`,
+        {
+          method: "GET",
+        }
+      );
       const allFoodCategory = await res.json();
 
-      const res2 = await fetch(`http://localhost:5000/Food`, {
-        method: "GET",
-      });
+      const res2 = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/Food`,
+        {
+          method: "GET",
+        }
+      );
       const allFoods = await res2.json();
       setFoodCategory(allFoodCategory);
       setFoods(allFoods);

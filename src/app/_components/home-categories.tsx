@@ -36,9 +36,12 @@ export default function Categories() {
   const { getToken } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://localhost:5000/FoodCategory`, {
-        method: "GET",
-      });
+      const response = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/FoodCategory`,
+        {
+          method: "GET",
+        }
+      );
       const categories: Dish[] = await response.json();
       setCategories(categories);
     };

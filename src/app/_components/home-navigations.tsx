@@ -68,7 +68,7 @@ export default function Navigaion() {
   useEffect(() => {
     const fetchdata = async () => {
       const fetchd = await fetch(
-        `http://localhost:5000/account/67933be24b8118f8d9c34b34`,
+        `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
         { method: "GET" }
       );
       const data = await fetchd.json();
@@ -86,14 +86,17 @@ export default function Navigaion() {
   const addOrder = async () => {
     console.log("form", form);
     console.log("order", order);
-    const senddata = await fetch(`http://localhost:5000/foodOrder`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify(form),
-    });
+    const senddata = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/foodOrder`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify(form),
+      }
+    );
     const response = await senddata.json();
     setResponse(response.message);
   };
@@ -135,7 +138,8 @@ export default function Navigaion() {
                             {foodsInfo.map((food, index) => (
                               <div
                                 key={food._id}
-                                className={`h-40 w-full flex gap-2 items-center bg-secondary rounded-lg`}>
+                                className={`h-40 w-full flex gap-2 items-center bg-secondary rounded-lg`}
+                              >
                                 <div className="w-[129px] h-[129px] content-center">
                                   <Image
                                     className="w-[350px] h-[125px] bg-cover bg-center rounded-xl"
@@ -160,7 +164,8 @@ export default function Navigaion() {
                                         onClick={() => {
                                           onDelete(food._id);
                                         }}
-                                        className=" w-4 h-4">
+                                        className=" w-4 h-4"
+                                      >
                                         X
                                       </button>
                                     </div>
@@ -184,7 +189,8 @@ export default function Navigaion() {
                                             changedOrder[index].quantity
                                           );
                                           setCount(count + 1);
-                                        }}>
+                                        }}
+                                      >
                                         -
                                       </button>
                                       <div className="w-9 h-9 content-center justify-items-center">
@@ -200,7 +206,8 @@ export default function Navigaion() {
                                             changedOrder[index].quantity
                                           );
                                           setCount(count + 1);
-                                        }}>
+                                        }}
+                                      >
                                         +
                                       </button>
                                       {/* <div
@@ -246,7 +253,8 @@ export default function Navigaion() {
                             addOrder();
                             setFailed(true);
                           }}
-                          className="bottom-2 absolute border border-red-500 w-10/12 rounded-full justify-center flex right-1/2 left-1/2 transform -translate-x-1/2 cursor-pointer">
+                          className="bottom-2 absolute border border-red-500 w-10/12 rounded-full justify-center flex right-1/2 left-1/2 transform -translate-x-1/2 cursor-pointer"
+                        >
                           Checkout
                           {isFailed && (
                             <div>

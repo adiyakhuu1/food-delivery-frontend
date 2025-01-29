@@ -30,9 +30,14 @@ export default async function Tabs(props: Props) {
   // const { foods, FoodCategory1, loading } = useFetchDatas();
   const { page } = props;
   const categoryFromProps = props.category;
-  const res = await fetch(`http://localhost:5000/FoodCategory`);
+  const res = await fetch(
+    `https://food-delivery-backend-q4dy.onrender.com/FoodCategory`
+  );
   const FoodCategory = await res.json();
-  const res2 = await fetch(`http://localhost:5000/Food`, { method: "GET" });
+  const res2 = await fetch(
+    `https://food-delivery-backend-q4dy.onrender.com/Food`,
+    { method: "GET" }
+  );
   const Foods = await res2.json();
   let oneC;
 
@@ -43,7 +48,7 @@ export default async function Tabs(props: Props) {
   if (categoryFromProps) {
     try {
       const res4 = await fetch(
-        `http://localhost:5000/FoodCategory/${categoryFromProps}`
+        `https://food-delivery-backend-q4dy.onrender.com/FoodCategory/${categoryFromProps}`
       );
       if (res4) {
         oneC = await res4.json();
@@ -53,9 +58,12 @@ export default async function Tabs(props: Props) {
       console.log(error, "aldaa");
     }
   }
-  const res5 = await fetch(`http://localhost:5000/foodOrder`, {
-    method: "GET",
-  });
+  const res5 = await fetch(
+    `https://food-delivery-backend-q4dy.onrender.com/foodOrder`,
+    {
+      method: "GET",
+    }
+  );
   const reponse = await res5.json();
 
   if (page === `orders`) {
@@ -100,7 +108,8 @@ export default async function Tabs(props: Props) {
                     !categoryFromProps
                       ? `border-red-500 border`
                       : `border-border rounded-full`
-                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}>
+                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}
+                >
                   All dishes ({Foods.length})
                 </Badge>
               </Link>
@@ -127,7 +136,8 @@ export default async function Tabs(props: Props) {
           FoodCategory.map((categor: Dish, index: number) => (
             <div
               key={categor._id}
-              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 ">
+              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
+            >
               <div className="text-foreground text-xl font-extrabold flex justify-between">
                 <div>
                   {index + 1 + ". "}
@@ -151,7 +161,8 @@ export default async function Tabs(props: Props) {
               return (
                 <div
                   key={categor._id}
-                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 ">
+                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
+                >
                   <div className="text-foreground text-xl flex justify-between font-extrabold ">
                     <div>
                       {index + 1 + ". "}

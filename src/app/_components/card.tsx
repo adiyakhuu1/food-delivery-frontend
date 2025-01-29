@@ -55,9 +55,12 @@ function Card({ categoryId, categoryName }: Props) {
   const [ref, refresh] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
-        method: "GET",
-      });
+      const recCate = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/food/${categoryId}`,
+        {
+          method: "GET",
+        }
+      );
       const categorizedFoods: Food[] = await recCate.json();
       setFoods(categorizedFoods);
     };
@@ -65,9 +68,12 @@ function Card({ categoryId, categoryName }: Props) {
   }, [ref]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`http://localhost:5000/foodCategory`, {
-        method: "GET",
-      });
+      const recCate = await fetch(
+        `https://food-delivery-backend-q4dy.onrender.com/foodCategory`,
+        {
+          method: "GET",
+        }
+      );
       const categories: Dish[] = await recCate.json();
       setAllCategory(categories);
     };
@@ -86,51 +92,60 @@ function Card({ categoryId, categoryName }: Props) {
   }, []);
 
   const addnewitem = async () => {
-    const recCate = await fetch(`http://localhost:5000/food`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify({
-        foodName,
-        price,
-        ingredients,
-        image: "",
-        category: chooseCate,
-      }),
-    });
+    const recCate = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/food`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify({
+          foodName,
+          price,
+          ingredients,
+          image: "",
+          category: chooseCate,
+        }),
+      }
+    );
     const response = recCate.json();
     console.log(response);
     refresh(ref + 1);
   };
 
   const deleteFood = async () => {
-    const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-    });
+    const recCate = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/food/${getFoodId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+      }
+    );
     const response = recCate.json();
     console.log(response);
     refresh(ref + 1);
   };
   const edititem = async () => {
-    const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify({
-        foodName,
-        price,
-        ingredients,
-        category: changeCategory,
-      }),
-    });
+    const recCate = await fetch(
+      `https://food-delivery-backend-q4dy.onrender.com/food/${getFoodId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify({
+          foodName,
+          price,
+          ingredients,
+          category: changeCategory,
+        }),
+      }
+    );
     const response = recCate.json();
     console.log(response);
     refresh(ref + 1);

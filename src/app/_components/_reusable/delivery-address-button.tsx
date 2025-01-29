@@ -22,7 +22,7 @@ export default function DeliveryAddress() {
   const onSave = async () => {
     if (token) {
       const fetchD = await fetch(
-        `http://localhost:5000/account/67933be24b8118f8d9c34b34`,
+        `https://food-delivery-backend-q4dy.onrender.com/account/67933be24b8118f8d9c34b34`,
         {
           method: "PUT",
           headers: {
