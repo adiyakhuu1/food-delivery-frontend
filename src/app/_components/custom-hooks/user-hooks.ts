@@ -19,11 +19,12 @@ export const useUserHook = () => {
 
   useEffect(() => {
     let isMounted = true;
+    const userIdString = localStorage.getItem("userId");
     const fetchdata = async () => {
       try {
         if (token) {
           const fetchd = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/account/67933be24b8118f8d9c34b34`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/account/${userIdString}`,
             {
               method: "GET",
               headers: {
@@ -44,7 +45,6 @@ export const useUserHook = () => {
         }
       }
     };
-    console.log(token);
     if (token) {
       fetchdata();
     }

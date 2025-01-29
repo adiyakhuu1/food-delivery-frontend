@@ -80,7 +80,7 @@ export default function Navigaion() {
       );
       const data = await res.json();
       setUserInfo(data);
-      console.log("checking", data);
+      console.log("checking -", data.message);
     };
     fetchData();
   }, [user]);
@@ -146,8 +146,6 @@ export default function Navigaion() {
     setFoodsInfo(findfood);
     setOrder(findOrder);
   };
-  console.log("email", user?.emailAddresses[0].emailAddress);
-  console.log("env", process.env.NEXT_PUBLIC_DB_URL);
   return (
     <div className="bg-primary h-17 w-full justify-items-center">
       <div className="flex items-center justify-between w-[90%]">
@@ -170,7 +168,7 @@ export default function Navigaion() {
         )}
         {/* <div>Hi adiyakhuu</div> */}
         <div className="flex gap-3">
-          {userInfo && <DeliveryAddress userInfo={userInfo} />}
+          {userInfo && <DeliveryAddress userInfo={userInfo} token={token} />}
 
           <Sheet>
             <SheetTrigger>

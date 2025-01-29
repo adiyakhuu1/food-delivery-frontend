@@ -33,40 +33,38 @@ export type userInfo = {
 };
 type Props = {
   userInfo: userInfo;
+  token: string;
 };
 export default function DeliveryAddress(props: Props) {
   const { getToken } = useAuth();
   const [address, setAddress] = useState("");
-  // const [token, setToken] = useState("");
   const { user } = useUserHook();
-  const { token } = useTokenHook();
+  // const { token } = useTokenHook();
+  useEffect(() => {
+    localStorage.setItem("userId", props.userInfo.userExists._id);
+  }, [props.userInfo.userExists._id]);
 
   // useEffect(() => {
-  //   const f = async () => {
-  //     const tokeen = await getToken();
-  //     if (tokeen) {
-  //       setToken(tokeen);
-  //     }
-  //   };
+  //   console.log("user id", props.userInfo.userExists._id);
+  //   console.log("token", props.token);
   // }, []);
   const onSave = async () => {
-    if (token) {
+    if (props.token) {
       const fetchD = await fetch(
         `${process.env.NEXT_PUBLIC_DB_URL}/account/${props.userInfo.userExists._id}`,
         {
-          method: "PATCH",
+          method: "PUT",
           headers: {
-            auth: token,
+            auth: props.token,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(address),
+          body: JSON.stringify({ address }),
         }
       );
       const response = await fetchD.json();
       console.log(response);
     }
   };
-  console.log("checking address button", user);
   return (
     <>
       <Dialog>
