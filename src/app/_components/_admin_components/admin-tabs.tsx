@@ -30,9 +30,11 @@ export default async function Tabs(props: Props) {
   // const { foods, FoodCategory1, loading } = useFetchDatas();
   const { page } = props;
   const categoryFromProps = props.category;
-  const res = await fetch(`${process.env.DB_URL}/FoodCategory`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`);
   const FoodCategory = await res.json();
-  const res2 = await fetch(`${process.env.DB_URL}/Food`, { method: "GET" });
+  const res2 = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/Food`, {
+    method: "GET",
+  });
   const Foods = await res2.json();
   let oneC;
 
@@ -43,7 +45,7 @@ export default async function Tabs(props: Props) {
   if (categoryFromProps) {
     try {
       const res4 = await fetch(
-        `${process.env.DB_URL}/FoodCategory/${categoryFromProps}`
+        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/${categoryFromProps}`
       );
       if (res4) {
         oneC = await res4.json();
@@ -53,7 +55,7 @@ export default async function Tabs(props: Props) {
       console.log(error, "aldaa");
     }
   }
-  const res5 = await fetch(`${process.env.DB_URL}/foodOrder`, {
+  const res5 = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
     method: "GET",
   });
   const reponse = await res5.json();

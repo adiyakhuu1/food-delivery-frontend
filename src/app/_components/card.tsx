@@ -55,9 +55,12 @@ function Card({ categoryId, categoryName }: Props) {
   const [ref, refresh] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`${process.env.DB_URL}/food/${categoryId}`, {
-        method: "GET",
-      });
+      const recCate = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/food/${categoryId}`,
+        {
+          method: "GET",
+        }
+      );
       const categorizedFoods: Food[] = await recCate.json();
       setFoods(categorizedFoods);
     };
@@ -65,9 +68,12 @@ function Card({ categoryId, categoryName }: Props) {
   }, [ref]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`${process.env.DB_URL}/foodCategory`, {
-        method: "GET",
-      });
+      const recCate = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/foodCategory`,
+        {
+          method: "GET",
+        }
+      );
       const categories: Dish[] = await recCate.json();
       setAllCategory(categories);
     };
@@ -86,7 +92,7 @@ function Card({ categoryId, categoryName }: Props) {
   }, []);
 
   const addnewitem = async () => {
-    const recCate = await fetch(`${process.env.DB_URL}/food`, {
+    const recCate = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/food`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -106,31 +112,37 @@ function Card({ categoryId, categoryName }: Props) {
   };
 
   const deleteFood = async () => {
-    const recCate = await fetch(`${process.env.DB_URL}/food/${getFoodId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-    });
+    const recCate = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_URL}/food/${getFoodId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+      }
+    );
     const response = recCate.json();
     console.log(response);
     refresh(ref + 1);
   };
   const edititem = async () => {
-    const recCate = await fetch(`${process.env.DB_URL}/food/${getFoodId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify({
-        foodName,
-        price,
-        ingredients,
-        category: changeCategory,
-      }),
-    });
+    const recCate = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_URL}/food/${getFoodId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify({
+          foodName,
+          price,
+          ingredients,
+          category: changeCategory,
+        }),
+      }
+    );
     const response = recCate.json();
     console.log(response);
     refresh(ref + 1);

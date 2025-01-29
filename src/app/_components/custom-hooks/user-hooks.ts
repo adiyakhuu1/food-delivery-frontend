@@ -23,7 +23,7 @@ export const useUserHook = () => {
       try {
         if (token) {
           const fetchd = await fetch(
-            `${process.env.DB_URL}/account/67933be24b8118f8d9c34b34`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/account/67933be24b8118f8d9c34b34`,
             {
               method: "GET",
               headers: {

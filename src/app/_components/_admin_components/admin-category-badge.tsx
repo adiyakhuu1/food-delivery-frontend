@@ -16,9 +16,12 @@ export default function AdminCategory(props: Props) {
   const [count, setCount] = useState<number>(0);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`${process.env.DB_URL}/food/${id}`, {
-        method: "GET",
-      });
+      const recCate = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/food/${id}`,
+        {
+          method: "GET",
+        }
+      );
       const categorizedFoods: Food[] = await recCate.json();
       setCount(categorizedFoods.length);
     };

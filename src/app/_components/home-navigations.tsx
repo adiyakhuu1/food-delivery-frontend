@@ -65,16 +65,19 @@ export default function Navigaion() {
   }, [success]);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`${process.env.DB_URL}/account/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: user?.emailAddresses[0].emailAddress,
-          password: user?.id,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/account/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user?.emailAddresses[0].emailAddress,
+            password: user?.id,
+          }),
+        }
+      );
       const data = await res.json();
       setUserInfo(data);
       console.log("checking", data);
@@ -97,7 +100,7 @@ export default function Navigaion() {
   // useEffect(() => {
   //   const fetchdata = async () => {
   //     const fetchd = await fetch(
-  //       `${process.env.DB_URL}/account/67933be24b8118f8d9c34b34`,
+  //       `${process.env.NEXT_PUBLIC_DB_URL}/account/67933be24b8118f8d9c34b34`,
   //       { method: "GET" }
   //     );
   //     const data = await fetchd.json();
@@ -116,14 +119,17 @@ export default function Navigaion() {
     console.log("user", user);
     console.log("order", order);
     if (user) {
-      const senddata = await fetch(`${process.env.DB_URL}/foodOrder`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          auth: token,
-        },
-        body: JSON.stringify(form),
-      });
+      const senddata = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            auth: token,
+          },
+          body: JSON.stringify(form),
+        }
+      );
       const response = await senddata.json();
       setResponse(response.message);
       if (response.message === "success") {
@@ -141,7 +147,7 @@ export default function Navigaion() {
     setOrder(findOrder);
   };
   console.log("email", user?.emailAddresses[0].emailAddress);
-  console.log("order", order);
+  console.log("env", process.env.NEXT_PUBLIC_DB_URL);
   return (
     <div className="bg-primary h-17 w-full justify-items-center">
       <div className="flex items-center justify-between w-[90%]">

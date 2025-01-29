@@ -11,12 +11,15 @@ export const useCategoryHook = () => {
     console.log("useCategoryHook start");
     const fetchData = async () => {
       try {
-        const recCate = await fetch(`${process.env.DB_URL}/foodCategory`, {
-          method: "GET",
-          headers: {
-            auth: token,
-          },
-        });
+        const recCate = await fetch(
+          `${process.env.NEXT_PUBLIC_DB_URL}/foodCategory`,
+          {
+            method: "GET",
+            headers: {
+              auth: token,
+            },
+          }
+        );
         const categories: Dish[] = await recCate.json();
         if (isMounted) {
           setAllCategory(categories);

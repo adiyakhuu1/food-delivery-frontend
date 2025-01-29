@@ -83,7 +83,7 @@ export const DeleteButton = (props: deletebuttonprops) => {
   const searchParams = useSearchParams();
   console.log(path + searchParams);
   const deleteCategory = async (id: string) => {
-    await fetch(`${process.env.DB_URL}/FoodCategory/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/${id}`, {
       method: "DELETE",
       headers: {
         auth: token,

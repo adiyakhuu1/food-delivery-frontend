@@ -52,7 +52,7 @@ export default function DeliveryAddress(props: Props) {
   const onSave = async () => {
     if (token) {
       const fetchD = await fetch(
-        `${process.env.DB_URL}/account/${props.userInfo.userExists._id}`,
+        `${process.env.NEXT_PUBLIC_DB_URL}/account/${props.userInfo.userExists._id}`,
         {
           method: "PATCH",
           headers: {

@@ -113,12 +113,15 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   }, [alerts]);
   useEffect(() => {
     const fetchData = async () => {
-      const recCate = await fetch(`${process.env.DB_URL}/food/${categoryId}`, {
-        method: "GET",
-        headers: {
-          auth: token,
-        },
-      });
+      const recCate = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/food/${categoryId}`,
+        {
+          method: "GET",
+          headers: {
+            auth: token,
+          },
+        }
+      );
       const categorizedFoods: Food[] = await recCate.json();
       setFoods(categorizedFoods);
     };
@@ -126,7 +129,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   }, []);
 
   const addnewitem = async () => {
-    const recCate = await fetch(`${process.env.DB_URL}/food`, {
+    const recCate = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/food`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -143,13 +146,16 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   };
 
   const deleteFood = async () => {
-    const recCate = await fetch(`${process.env.DB_URL}/food/${getFoodId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-    });
+    const recCate = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_URL}/food/${getFoodId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+      }
+    );
     const response = await recCate.json();
     if (response.message === "success") {
       setAlerts({
@@ -165,17 +171,20 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     refresh(ref + 1);
   };
   const edititem = async () => {
-    const recCate = await fetch(`${process.env.DB_URL}/food/${getFoodId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify({
-        ...form,
-        image,
-      }),
-    });
+    const recCate = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_URL}/food/${getFoodId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify({
+          ...form,
+          image,
+        }),
+      }
+    );
     const response = await recCate.json();
     if (response.message !== "success") {
       setAlerts({

@@ -24,16 +24,19 @@ export default function AddCategory() {
   const { token } = useTokenContext();
   const [newCategory, setNewCategory] = useState();
   const handleClick = async () => {
-    const res = await fetch(`${process.env.DB_URL}/FoodCategory/addnew`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        auth: token,
-      },
-      body: JSON.stringify({
-        name,
-      }),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/addnew`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          auth: token,
+        },
+        body: JSON.stringify({
+          name,
+        }),
+      }
+    );
     const response = await res.json();
     setNewCategory(response);
   };

@@ -83,7 +83,7 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
           // const token = await getToken();
           console.log(e);
           const send = await fetch(
-            `${process.env.DB_URL}/foodOrder/${event.cell.row.original._id}`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
             {
               method: "PUT",
               headers: { auth: token, "Content-Type": "application/json" },
@@ -118,7 +118,7 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
             // const token = await getToken();
             console.log(e);
             const send = await fetch(
-              `${process.env.DB_URL}/foodOrder/${event.cell.row.original._id}`,
+              `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
               {
                 method: "DELETE",
                 headers: { auth: token, "Content-Type": "application/json" },

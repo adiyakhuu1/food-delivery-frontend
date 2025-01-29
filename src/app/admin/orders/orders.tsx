@@ -5,7 +5,7 @@ import { DataTable } from "./data-table";
 import { useEffect, useState } from "react";
 
 // async function getData(): Promise<Order[]> {
-//   const res = await fetch(`${process.env.DB_URL}/foodOrder`, { method: "GET" });
+//   const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, { method: "GET" });
 //   const orders = await res.json();
 
 //   // Fetch data from your API here.
@@ -21,7 +21,7 @@ export default function Orders() {
       const token = await getToken();
       if (token) {
         setToken(token);
-        const res = await fetch(`${process.env.DB_URL}/foodOrder`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
           method: "GET",
           headers: {
             auth: token,

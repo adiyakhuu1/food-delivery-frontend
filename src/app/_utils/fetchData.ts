@@ -9,12 +9,15 @@ export const useFetchDatas = async () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`${process.env.DB_URL}/FoodCategory`, {
-        method: "GET",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
+        {
+          method: "GET",
+        }
+      );
       const allFoodCategory = await res.json();
 
-      const res2 = await fetch(`${process.env.DB_URL}/Food`, {
+      const res2 = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/Food`, {
         method: "GET",
       });
       const allFoods = await res2.json();

@@ -38,7 +38,7 @@ export default function OrderTab(props: Props) {
     const fetchdata = async () => {
       if (token) {
         const res = await fetch(
-          `${process.env.DB_URL}/foodorder/${props.userInfo.userExists._id}`,
+          `${process.env.NEXT_PUBLIC_DB_URL}/foodorder/${props.userInfo.userExists._id}`,
           {
             method: "GET",
             headers: {
