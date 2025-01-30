@@ -19,7 +19,6 @@ type Props = {
 export default async function App(props: Props) {
   const { page } = await props.searchParams;
   const { category } = await props.searchParams;
-  console.log(page);
   if (!page) {
     return (
       <Link href={`?page=food+menu`}>

@@ -81,7 +81,6 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
         onChange={async (e) => {
           // const { getToken } = useAuth();
           // const token = await getToken();
-          console.log(e);
           const send = await fetch(
             `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
             {
@@ -94,7 +93,6 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
             }
           );
           const response = await send.json();
-          console.log(event.cell.row, e.target.value);
         }}
       >
         <option value={`PENDING`}>PENDING</option>
@@ -116,7 +114,6 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
           onClick={async (e) => {
             // const { getToken } = useAuth();
             // const token = await getToken();
-            console.log(e);
             const send = await fetch(
               `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
               {

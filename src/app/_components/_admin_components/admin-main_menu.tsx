@@ -33,7 +33,7 @@ export default function AdminMainMenu(props: Props) {
               }
             >
               <MdOutlineDashboard />
-              <h3 className="text-sm">Food menu</h3>
+              <h3 className="text-sm">Хоолны меню</h3>
             </Button>
           </Link>
           <Link href={`/admin?page=orders`}>
@@ -41,7 +41,7 @@ export default function AdminMainMenu(props: Props) {
               className={page === `orders` ? orderStyleSelected : orderStyle}
             >
               <HiOutlineTruck />
-              <h3 className="text-sm"> Orders</h3>
+              <h3 className="text-sm">Захиалгууд</h3>
             </Button>
           </Link>
           <Link href={`/admin?page=settings`}>
@@ -51,7 +51,7 @@ export default function AdminMainMenu(props: Props) {
               }
             >
               <CiSettings />
-              <h3 className="text-sm"> Settings</h3>
+              <h3 className="text-sm">Тохиргоо</h3>
             </Button>
           </Link>
         </div>

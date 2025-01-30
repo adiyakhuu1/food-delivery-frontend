@@ -6,13 +6,5 @@ type Props = {
 
 export default function Checking(props: Props) {
   const categoryFromParams = props.checking;
-  return (
-    <div
-      onClick={() => {
-        console.log(categoryFromParams);
-      }}
-    >
-      click here
-    </div>
-  );
+  return <div>click here</div>;
 }

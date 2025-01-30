@@ -58,7 +58,6 @@ export default function DeliveryAddress(props: Props) {
         }
       );
       const response = await fetchD.json();
-      console.log(response);
     }
   };
   return (
@@ -67,7 +66,7 @@ export default function DeliveryAddress(props: Props) {
         <DialogTrigger asChild>
           <Button className="flex px-4 p-2 gap-1 bg-background rounded-3xl items-center hover:bg-secondary">
             <IoLocationOutline className="text-2xl text-red-500" />
-            <div className="text-red-500">Delivery address:</div>
+            <div className="text-red-500">Хүргэлтийн хаяг:</div>
             <div className="text-foreground">
               {props.userInfo.userExists.address}
             </div>
@@ -76,7 +75,7 @@ export default function DeliveryAddress(props: Props) {
         </DialogTrigger>
         <DialogContent className="w-full h-80 flex flex-col">
           <div className="flex flex-col w-full h-full gap-5">
-            <DialogTitle>Delivery address</DialogTitle>
+            <DialogTitle>Хүргэлтийн хаяг</DialogTitle>
             <textarea
               onChange={(e) => {
                 setAddress(e.target.value);
@@ -88,13 +87,13 @@ export default function DeliveryAddress(props: Props) {
             <DialogClose asChild>
               <div>
                 <Button className="bg-secondary text-foreground hover:text-background">
-                  Close
+                  Хаах
                 </Button>
               </div>
             </DialogClose>
             <DialogClose asChild>
               <div>
-                <Button onClick={onSave}>Save</Button>
+                <Button onClick={onSave}>Хадгалах</Button>
               </div>
             </DialogClose>
           </div>

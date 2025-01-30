@@ -28,12 +28,7 @@ export default function AdminCategory(props: Props) {
     fetchData();
   }, []);
   return (
-    <Link
-      onClick={() => {
-        console.log(name);
-      }}
-      href={`/admin?page=food+menu&category=${id}`}
-    >
+    <Link href={`/admin?page=food+menu&category=${id}`}>
       <Badge
         className={`py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background ${
           style === id

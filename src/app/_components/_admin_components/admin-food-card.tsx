@@ -214,7 +214,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       );
       const response = await res.json();
       setImage(response.secure_url);
-      console.log(response.secure_url);
     }
   };
 
@@ -258,7 +257,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               category: categoryId,
             });
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -267,29 +267,29 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               height={40}
             />
           </div>
-          <div>Add new dish to {categoryName}</div>
+          <div>{categoryName} - категорд хоол нэмэх</div>
         </DialogTrigger>
         <DialogContent className="">
           <DialogHeader>
-            <DialogTitle>Add new Dish to {categoryName}</DialogTitle>
+            <DialogTitle>{categoryName} -д хоол нэмэх гэж байна!</DialogTitle>
             {/* <DialogDescription>check</DialogDescription> */}
           </DialogHeader>
 
           <div className="flex flex-col gap-3">
             <div className="flex justify-between">
               <div>
-                <h2>Food Name</h2>
+                <h2>Хоолны нэр</h2>
                 <input
                   name="foodName"
                   onChange={(e) => {
                     onChangeForm(e);
                   }}
-                  placeholder="Enter the food name"
+                  placeholder="Хоолны нэрийг оруулна уу!"
                   className="border  border-border rounded-md p-2"
                 />
               </div>
               <div>
-                <h2>Food Price</h2>
+                <h2>Хоолны Үнэ</h2>
                 <input
                   name="price"
                   onChange={(e) => {
@@ -297,7 +297,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     onChangeForm(e);
                   }}
                   type="number"
-                  placeholder="Enter the price"
+                  placeholder="Хоолны үнийг оруулна уу!"
                   className="border border-border rounded-md p-2"
                 />
               </div>
@@ -308,12 +308,12 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 onChange={(e) => {
                   onChangeForm(e);
                 }}
-                placeholder="List of ingredients"
+                placeholder="Хоолны орц, найрлага"
                 className="border border-border h-20"
               />
             </div>
             <div className="flex flex-col">
-              <label>Food image</label>
+              <label>Хоолны зураг</label>
               <input
                 name="image"
                 type="file"
@@ -332,15 +332,15 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     e.preventDefault();
                   } else {
                     addnewitem();
-                    console.log(image);
 
                     // handleReload();
                   }
                 }}
                 className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
-                }`}>
-                Save
+                }`}
+              >
+                Хадгалах
               </Button>
             </DialogClose>
           </DialogFooter>
@@ -350,7 +350,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
+        >
           {/* edit dialog here */}
 
           <Dialog>
@@ -365,7 +366,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   category: food.category,
                 });
               }}
-              className="">
+              className=""
+            >
               <div>
                 <Image
                   className="absolute top-1/2 right-4 border border-border rounded-full shadow-lg"
@@ -378,26 +380,25 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Edit info - {categoryName}</DialogTitle>
+                <DialogTitle>Засах - {categoryName}</DialogTitle>
                 {/* <DialogDescription>check</DialogDescription> */}
               </DialogHeader>
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-4">
-                  <div className="flex justify-between">
-                    <h2>Dish Name</h2>
+                  <div className="flex justify-between items-center">
+                    <h2>Хоолны нэр</h2>
                     <Input
                       name="foodName"
                       onChange={(e) => {
                         onChangeForm(e);
-                        console.log(form);
                       }}
                       defaultValue={form.foodName}
-                      placeholder="Enter the food name"
+                      placeholder="Хоолны нэрийг оруулна уу!"
                       className="border border-border rounded-md p-2 w-[288px] text-foreground bg-background"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <label>Select a category</label>
+                    <label>Категор сонгох</label>
                     <select
                       required
                       name="category"
@@ -405,8 +406,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       className="border border-border w-[288px] px-4 py-1 rounded-md text-foreground bg-background"
                       onChange={(e) => {
                         onChangeForm(e);
-                        console.log(form);
-                      }}>
+                      }}
+                    >
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -415,7 +416,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background">
+                          className="text-foreground bg-background"
+                        >
                           {cate.name}
                         </option>
                       ))}
@@ -427,14 +429,13 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       defaultValue={form.ingredients}
                       onChange={(e) => {
                         onChangeForm(e);
-                        console.log(form);
                       }}
-                      placeholder="List of ingredients"
+                      placeholder="Хоолны орц, найрлага"
                       className="border border-border h-20 text-foreground bg-background"
                     />
                   </div>
-                  <div className="flex justify-between ">
-                    <h2>Dish Price</h2>
+                  <div className="flex justify-between items-center ">
+                    <h2>Хоолны үнэ</h2>
                     <input
                       name="price"
                       defaultValue={form.price}
@@ -442,14 +443,14 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                         onChangeForm(e);
                       }}
                       type="number"
-                      placeholder="Enter the price"
+                      placeholder="Үнээ оруулна уу!"
                       className="border border-border rounded-md p-2 w-[288px] text-foreground bg-background"
                     />
                   </div>
                 </div>
 
                 <div className="flex flex-col">
-                  <label>Food image</label>
+                  <label>Хоолны зураг</label>
                   {food.image ? (
                     <div>
                       <Image
@@ -471,14 +472,17 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               </div>
               <div className="flex justify-between">
                 <DialogFooter>
-                  <Link
-                    onClick={() => {
-                      deleteFood();
-                    }}
-                    href={path + "?" + searchParams}
-                    className=" px-5 p-2 text-foreground">
-                    <MdDeleteForever className="text-red-600 text-3xl" />
-                  </Link>
+                  <DialogClose asChild>
+                    <Link
+                      onClick={() => {
+                        deleteFood();
+                      }}
+                      href={path + "?" + searchParams}
+                      className=" px-5 p-2 text-foreground"
+                    >
+                      <MdDeleteForever className="text-red-600 text-3xl" />
+                    </Link>
+                  </DialogClose>
                 </DialogFooter>
                 <DialogFooter className="flex justify-between">
                   <DialogClose asChild>
@@ -497,8 +501,9 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       }}
                       className={`px-5 bg-foreground p-2 text-secondary ${
                         !isValid && `cursor-not-allowed bg-muted`
-                      }`}>
-                      Save
+                      }`}
+                    >
+                      Хадгалах
                     </Button>
                   </DialogClose>
                 </DialogFooter>

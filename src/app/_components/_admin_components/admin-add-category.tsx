@@ -62,7 +62,6 @@ export default function AddCategory() {
           <input
             onChange={(e) => {
               setName(e.target.value);
-              console.log(name);
             }}
             className="border border-border h-9 w-full"
           />

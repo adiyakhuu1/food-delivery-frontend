@@ -41,7 +41,6 @@ export default function Login() {
     );
     const data = await res.json();
     setVerify(data);
-    console.log(data);
   };
 
   return (
@@ -56,7 +55,6 @@ export default function Login() {
         <Input
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setEmail(e.target.value);
-            console.log(email);
           }}
           placeholder="Enter your email address"
           type="email"
@@ -66,7 +64,6 @@ export default function Login() {
         <Input
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value);
-            console.log(password);
           }}
           placeholder="Enter your password"
           type="password"

@@ -6,8 +6,8 @@ export function AlertDestructive() {
   return (
     <Alert className="bg-secondary gap-4" variant="destructive">
       <AlertCircle />
-      <AlertTitle>aldaaa</AlertTitle>
-      <AlertDescription>Buh talbarliig boglono uu!</AlertDescription>
+      <AlertTitle>Алдаа!</AlertTitle>
+      <AlertDescription>Бүх талбарыг бөглөнө үү!</AlertDescription>
     </Alert>
   );
 }
@@ -15,7 +15,7 @@ export function AlertDestructive() {
 export function AlertDemo() {
   return (
     <Alert className="bg-foreground text-background gap-4 ">
-      <AlertDescription>New dish is being added to the menu</AlertDescription>
+      <AlertDescription>Амжилттай!</AlertDescription>
     </Alert>
   );
 }

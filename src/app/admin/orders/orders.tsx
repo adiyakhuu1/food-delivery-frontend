@@ -33,7 +33,6 @@ export default function Orders() {
     };
     fetchData();
   }, []);
-  console.log(orders);
   // const data = await getData();
   const columns = createColumn(tokeen);
   return (

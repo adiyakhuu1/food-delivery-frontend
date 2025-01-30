@@ -50,9 +50,8 @@ export default async function Tabs(props: Props) {
       if (res4) {
         oneC = await res4.json();
       }
-      console.log(oneC);
     } catch (error) {
-      console.log(error, "aldaa");
+      console.error(error, "aldaa");
     }
   }
   const res5 = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
@@ -67,9 +66,9 @@ export default async function Tabs(props: Props) {
           <div className="top-1/2 absolute left-[55%] transform -translate-x-1/2 -translate-y-1/2 w-[70%]">
             <div className="h-19 flex bg-background justify-between">
               <div className="w-1/2 p-3">
-                <h1>Orders</h1>
+                <h1>Захиалгууд</h1>
                 <h4 className="text-muted-foreground">
-                  {reponse && reponse.length} items
+                  {reponse && reponse.length} захиалгууд
                 </h4>
               </div>
               <div className="w-1/2">
@@ -78,7 +77,7 @@ export default async function Tabs(props: Props) {
                     13 June 2023 - 14 July 2023
                   </div>
                   <div className="border border-border text-sm bg-muted text-foreground rounded-full py-2 px-4">
-                    Change delivery state
+                    захиалгын төлөв өөрчлөх
                   </div>
                 </div>
               </div>
@@ -94,7 +93,7 @@ export default async function Tabs(props: Props) {
       <div className="flex flex-col gap-10 w-[70%] right-40">
         <div className="w-full ">
           <div className="w-full h-auto py-10 bg-background">
-            <div className="text-xl p-5 font-bold">Dishes Category</div>
+            <div className="text-xl p-5 font-bold">Хоолны категорууд</div>
             <div className="flex gap-3 flex-wrap px-5">
               <Link href={`/admin?page=food+menu`}>
                 <Badge
@@ -104,7 +103,7 @@ export default async function Tabs(props: Props) {
                       : `border-border rounded-full`
                   }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}
                 >
-                  All dishes ({Foods.length})
+                  Бүгд ({Foods.length})
                 </Badge>
               </Link>
               {FoodCategory &&
@@ -126,7 +125,7 @@ export default async function Tabs(props: Props) {
             </div>
           </div>
         </div>
-        {!categoryFromProps ? (
+        {!categoryFromProps &&
           FoodCategory.map((categor: Dish, index: number) => (
             <div
               key={categor._id}
@@ -142,10 +141,7 @@ export default async function Tabs(props: Props) {
                 <Card categoryName={categor.name} categoryId={categor._id} />
               </div>
             </div>
-          ))
-        ) : (
-          <div>Loading</div>
-        )}
+          ))}
         {/* {FoodCategory.map((cate: Dish) => {
           // let isFound = false;
           if (cate._id !== categoryFromProps) {
@@ -153,7 +149,7 @@ export default async function Tabs(props: Props) {
           }
         })} */}
         <Suspense>
-          {oneC ? (
+          {oneC &&
             oneC.map((categor: Dish, index: number) => (
               <div
                 key={categor._id}
@@ -174,10 +170,7 @@ export default async function Tabs(props: Props) {
                   />
                 </div>
               </div>
-            ))
-          ) : (
-            <div>Loading</div>
-          )}
+            ))}
         </Suspense>
       </div>
     );

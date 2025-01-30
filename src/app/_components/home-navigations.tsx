@@ -80,7 +80,6 @@ export default function Navigaion() {
       );
       const data = await res.json();
       setUserInfo(data);
-      console.log("checking -", data.message);
     };
     fetchData();
   }, [user]);
@@ -116,8 +115,6 @@ export default function Navigaion() {
   };
 
   const addOrder = async () => {
-    console.log("user", user);
-    console.log("order", order);
     if (user) {
       const senddata = await fetch(
         `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`,
@@ -154,14 +151,14 @@ export default function Navigaion() {
         </div>
         {user && (
           <div className="text-background">
-            <div>Hello. {user.fullName}</div>
+            <div>Сайн байна уу! {user.fullName}</div>
 
             {user.publicMetadata.role === `admin` && (
               <Link
                 href={`/admin?page=food+menu`}
                 className="text-xs border border-red-300 hover:border-red-500 rounded-lg px-3"
               >
-                you are an admin. click here
+                Та бол админ. Энд дарна уу!
               </Link>
             )}
           </div>
@@ -180,10 +177,10 @@ export default function Navigaion() {
                 <Tabs defaultValue="cart" className="">
                   <TabsList className="w-full rounded-full ">
                     <TabsTrigger value="cart" className="w-1/2 rounded-full">
-                      Cart
+                      Сагс
                     </TabsTrigger>
                     <TabsTrigger value="order" className="w-1/2 rounded-full">
-                      Order
+                      Захиалга
                     </TabsTrigger>
                   </TabsList>
                   <TabsContent value="cart">
@@ -241,9 +238,6 @@ export default function Navigaion() {
                                         className="w-9 h-9"
                                         onClick={() => {
                                           changedOrder[index].quantity -= 1;
-                                          console.log(
-                                            changedOrder[index].quantity
-                                          );
                                           setCount(count + 1);
                                         }}
                                       >
@@ -258,9 +252,6 @@ export default function Navigaion() {
                                         className="w-9 h-9"
                                         onClick={() => {
                                           changedOrder[index].quantity += 1;
-                                          console.log(
-                                            changedOrder[index].quantity
-                                          );
                                           setCount(count + 1);
                                         }}
                                       >
@@ -282,7 +273,7 @@ export default function Navigaion() {
                             {foodsInfo.length <= 0 && (
                               <div className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col items-center gap-4 justify-center">
                                 {success ? (
-                                  <div>Order Success</div>
+                                  <div>Захиалга амжилттай</div>
                                 ) : (
                                   <>
                                     <Image
@@ -292,12 +283,11 @@ export default function Navigaion() {
                                       height={50}
                                     />
                                     <h2 className="text-foreground font-bold">
-                                      No Orders Yet?{" "}
+                                      Сагс хоосон байна!
                                     </h2>
                                     <p className="text-xs text-center">
-                                      🍕 "You haven't placed any orders yet.
-                                      Start exploring our menu and satisfy your
-                                      cravings!"
+                                      🍕 "Сагсанд хоол алга. Хоол нэмэх дээр
+                                      дарж хоолөө сонгоно уу!"
                                     </p>
                                   </>
                                 )}
@@ -312,23 +302,23 @@ export default function Navigaion() {
                         <div className=" flex justify-center cursor-pointer">
                           <SheetClose asChild>
                             <div className="text-center text-sm font-semibold text-red-500 w-full border border-red-500 rounded-full p-2 content-center">
-                              Add food
+                              Хоол нэмэх
                             </div>
                           </SheetClose>
                         </div>
                       </div>
                       <div className="h-[240px] bg-background rounded-xl relative p-3">
-                        <h1 className="font-bold">Payment Info</h1>
+                        <h1 className="font-bold">Төлбөрийн мэдээлэл</h1>
                         <div className="flex justify-between p-3">
-                          <div>Items</div>
+                          <div>Үнэ</div>
                           <div>${price}</div>
                         </div>
                         <div className="flex justify-between p-3">
-                          <div>Shipping</div>
+                          <div>Хүргэлт</div>
                           <div>$0.99</div>
                         </div>
                         <div className="flex justify-between p-3 border-t border-dashed border-foreground-50">
-                          <div>Total</div>
+                          <div>Нийт дүн</div>
                           <div>${totalPrice}</div>
                         </div>
                         <div
@@ -343,7 +333,7 @@ export default function Navigaion() {
                           }}
                           className="bottom-2 absolute border border-red-500 w-10/12 rounded-full justify-center flex right-1/2 left-1/2 transform -translate-x-1/2 cursor-pointer"
                         >
-                          Checkout
+                          Төлөх
                           {isFailed && (
                             <div>
                               {response !== "success" ? (
@@ -359,7 +349,9 @@ export default function Navigaion() {
                   </TabsContent>
                   <TabsContent value="order">
                     <div className="bg-background h-[440px] w-[336px] border rounded-2xl p-2 overflow-scroll scrollbar-none box-content justify-items-center">
-                      <div className="justify-self-start">Order history</div>
+                      <div className="justify-self-start">
+                        Захиалгын түүхүүд
+                      </div>
 
                       {userInfo && <OrderTab userInfo={userInfo} />}
                     </div>

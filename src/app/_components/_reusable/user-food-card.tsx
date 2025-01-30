@@ -127,7 +127,6 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 setPrice(food.price);
                 setImage(food.image);
                 setCount(1);
-                console.log(order);
                 // selectedFood(food);
               }}
               className=""
@@ -163,8 +162,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 <div className="flex flex-col gap-10">
                   <div className="flex justify-between">
                     <div>
-                      <div>Total price</div>
-                      <div>${food.price}</div>
+                      <div>Нийт үнэ</div>
+                      <div>${food.price * count}</div>
                     </div>
 
                     <div className="flex gap-4 items-center">
@@ -175,7 +174,6 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         }`}
                         onClick={() => {
                           setCount((p) => p - 1);
-                          console.log(count);
                         }}
                       >
                         -
@@ -185,7 +183,6 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         className="bg-background border border-foreground rounded-full text-foreground hover:text-background"
                         onClick={() => {
                           setCount((p) => p + 1);
-                          console.log(count);
                         }}
                       >
                         +
@@ -197,8 +194,6 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                       <Button
                         onClick={() => {
                           const exist = order.find((item) => {
-                            console.log("find", item.food);
-                            console.log("map", food._id);
                             if (item.food === food._id) {
                               setAlert(true);
                               return item;
@@ -226,11 +221,10 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                               },
                             ]);
                           }
-                          console.log(order);
                         }}
                         className="w-full rounded-lg bg-primary"
                       >
-                        Add to cart
+                        Сагсанд нэмэх
                       </Button>
                     </DialogClose>
                   </SignedIn>
@@ -239,7 +233,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                       <SignInButton>
                         <div>
                           <Pfp />
-                          <div>Sign in</div>
+                          <div>Нэвтэрнэ үү!</div>
                         </div>
                       </SignInButton>
                     </div>

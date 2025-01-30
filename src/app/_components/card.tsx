@@ -107,7 +107,6 @@ function Card({ categoryId, categoryName }: Props) {
       }),
     });
     const response = recCate.json();
-    console.log(response);
     refresh(ref + 1);
   };
 
@@ -123,7 +122,6 @@ function Card({ categoryId, categoryName }: Props) {
       }
     );
     const response = recCate.json();
-    console.log(response);
     refresh(ref + 1);
   };
   const edititem = async () => {
@@ -144,11 +142,9 @@ function Card({ categoryId, categoryName }: Props) {
       }
     );
     const response = recCate.json();
-    console.log(response);
     refresh(ref + 1);
   };
 
-  // console.log(pizza);
   return (
     <>
       <Dialog>
@@ -267,7 +263,6 @@ function Card({ categoryId, categoryName }: Props) {
                     <Input
                       onChange={(e) => {
                         setFoodName(e.target.value);
-                        console.log(foodName);
                       }}
                       defaultValue={foodName}
                       placeholder="Enter the food name"
@@ -282,15 +277,10 @@ function Card({ categoryId, categoryName }: Props) {
                       className="border border-border w-[288px] px-4 py-1 rounded-md text-foreground bg-background"
                       onChange={(e) => {
                         setEditCategory(e.target.value);
-                        console.log(changeCategory);
                       }}
                     >
                       {categories.map((cate) => (
                         <option
-                          // onClick={() => {
-                          //   setEditCategory(cate._id);
-                          //   console.log(changeCategory);
-                          // }}
                           key={cate._id}
                           value={`${cate._id}`}
                           className="text-foreground bg-background"

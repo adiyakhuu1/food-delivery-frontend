@@ -53,7 +53,6 @@ export default function Login() {
     );
     const data = await res.json();
     setResponse(data.message);
-    console.log(response);
   };
   const handleSignIn = async () => {
     const res = await fetch(
@@ -67,9 +66,7 @@ export default function Login() {
       }
     );
     const data = await res.json();
-    console.log(data);
   };
-  console.log(page);
   return !page ? (
     <div className="w-4/5 flex flex-col gap-4">
       <div className="h-15">
@@ -84,7 +81,6 @@ export default function Login() {
         <Input
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setEmail(e.target.value);
-            console.log(email);
           }}
           placeholder="Enter your email address"
           type="email"
@@ -143,7 +139,6 @@ export default function Login() {
         <Input
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value);
-            console.log(password);
           }}
           placeholder="Enter your password"
           type="password"

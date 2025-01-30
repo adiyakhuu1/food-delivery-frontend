@@ -8,7 +8,6 @@ export const useCategoryHook = () => {
   const { token } = useTokenContext();
   useEffect(() => {
     let isMounted = true;
-    console.log("useCategoryHook start");
     const fetchData = async () => {
       try {
         const recCate = await fetch(
@@ -29,7 +28,6 @@ export const useCategoryHook = () => {
       } finally {
         setLoading(false);
       }
-      console.log("useCategoryHook end");
     };
     if (token) {
       fetchData();

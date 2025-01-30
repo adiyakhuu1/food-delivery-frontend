@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export const TableCard = () => {
   return (
@@ -66,9 +67,37 @@ export const TableCard = () => {
 type deletebuttonprops = {
   categor: Dish;
 };
+type category = {
+  name: string;
+  _id: string;
+};
 export const DeleteButton = (props: deletebuttonprops) => {
   const [token, setToken] = useState("");
+  const [data, setData] = useState<category[]>([]);
   const { getToken } = useAuth();
+  const [count, setCount] = useState(3);
+  const [wait, setWait] = useState(false);
+
+  useEffect(() => {
+    let interval = setInterval(() => {
+      setCount((prev) => prev - 1);
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [wait]);
+  useEffect(() => {
+    let interval = setTimeout(() => {
+      setWait(false);
+    }, 3000);
+    return () => {
+      clearTimeout(interval);
+    };
+  }, [wait]);
+  useEffect(() => {
+    localStorage.setItem("allCategories", JSON.stringify(data));
+  }, [data]);
+
   useEffect(() => {
     const dosomething = async () => {
       const token = await getToken();
@@ -81,28 +110,45 @@ export const DeleteButton = (props: deletebuttonprops) => {
   const { categor } = props;
   const path = usePathname();
   const searchParams = useSearchParams();
-  console.log(path + searchParams);
   const deleteCategory = async (id: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/${id}`, {
-      method: "DELETE",
-      headers: {
-        auth: token,
-      },
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          auth: token,
+        },
+      }
+    );
+    const dat = await res.json();
+    setData(dat);
   };
   return (
     <>
       <Dialog>
-        <DialogTrigger className="text-red-500">Delete</DialogTrigger>
+        <DialogTrigger
+          onClick={() => {
+            setCount(3);
+            setWait(true);
+          }}
+          className="text-red-500"
+        >
+          УСТГАХ
+        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
               <div className="text-center">
-                You are going to delete "
+                Та "
                 <span className="text-red-700">
                   {categor.name && categor.name.toUpperCase()}
                 </span>
-                ". <br /> Are you sure?
+                " -ийг устгах гэж байна.
+                <br />{" "}
+                <span className="text-red-500 font-bold">
+                  Бас дотор агуулсан бүх хоол устах болно!
+                </span>
+                <br /> <br /> Та итгэлтэй байна уу?
               </div>
             </DialogTitle>
           </DialogHeader>
@@ -112,20 +158,30 @@ export const DeleteButton = (props: deletebuttonprops) => {
               className="text-red-500 border border-border bg-secondary px-10 p-2 rounded-lg content-center"
               asChild
             >
-              <Link
+              <Button
+                disabled={wait}
                 onClick={() => {
                   deleteCategory(categor._id);
                 }}
-                href={path + "?page=food+menu"}
               >
-                YES
-              </Link>
+                <Link
+                  className="bg-none"
+                  onClick={(e) => {
+                    if (wait) {
+                      e.preventDefault();
+                    }
+                  }}
+                  href={path + `?page=food menu`}
+                >
+                  Тийм {wait === true ? `(Wait ${count}s)` : ``}
+                </Link>
+              </Button>
             </DialogClose>
             <DialogClose
               className="text-background border border-border bg-foreground px-10 p-2 rounded-lg cursor-pointer"
               asChild
             >
-              <div>NO</div>
+              <Button>Үгүй</Button>
             </DialogClose>
           </div>
         </DialogContent>

@@ -53,7 +53,6 @@ export default function OrderTab(props: Props) {
     };
     fetchdata();
   }, [token]);
-  console.log(foodOrders);
   return (
     <>
       <div className="bg-background min-h-[440px] w-[336px] border rounded-2xl p-2 gap-9 overflow-scroll scrollbar-none box-content justify-items-center">
@@ -68,10 +67,9 @@ export default function OrderTab(props: Props) {
                 width={61}
                 height={50}
               />
-              <h2 className="text-foreground font-bold">No Orders Yet? </h2>
+              <h2 className="text-foreground font-bold">Захиалга алга</h2>
               <p className="text-xs text-center">
-                🍕 "You haven't placed any orders yet. Start exploring our menu
-                and satisfy your cravings!"
+                🍕 "Хоолоо сонгон захиална уу!"
               </p>
             </div>
           ) : (

@@ -13,7 +13,6 @@ type Props = {
 };
 export default async function App({ params }: Props) {
   const { category_id } = await params;
-  console.log(category_id);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
     {

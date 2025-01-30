@@ -60,7 +60,7 @@ export default function Categories() {
   return (
     <div className="w-full justify-items-center">
       <div className="w-[90%] flex flex-col gap-5">
-        <div className="text-primary-foreground text-3xl ">Categories</div>
+        <div className="text-primary-foreground text-3xl ">Категорууд</div>
         <div className="flex gap-4">
           <div className="overflow-scroll w-full flex gap-7 items-center justify-center scrollbar-none">
             <div onClick={scrollLeft} className=" cursor-pointer">
