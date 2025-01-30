@@ -44,10 +44,6 @@ export default function DeliveryAddress(props: Props) {
     localStorage.setItem("userId", props.userInfo.userExists._id);
   }, [props.userInfo.userExists._id]);
 
-  // useEffect(() => {
-  //   console.log("user id", props.userInfo.userExists._id);
-  //   console.log("token", props.token);
-  // }, []);
   const onSave = async () => {
     if (props.token) {
       const fetchD = await fetch(
