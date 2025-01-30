@@ -35,29 +35,52 @@ type Props = {
   userInfo: userInfo;
   token: string;
 };
+type user = {
+  _id: string;
+  email: string;
+  password: string;
+  phoneNumber: number;
+  address: string;
+  role: string;
+  isVerified: boolean;
+  createdAt: boolean;
+  updatedAt: boolean;
+  __v: number;
+};
 export default function DeliveryAddress(props: Props) {
   const { getToken } = useAuth();
   const [address, setAddress] = useState("");
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState<user>();
   const { user } = useUserHook();
   // const { token } = useTokenHook();
   useEffect(() => {
+    const fetch = async () => {
+      const tokeen = await getToken();
+      if (tokeen) {
+        setToken(tokeen);
+      }
+    };
+    fetch();
     localStorage.setItem("userId", props.userInfo.userExists._id);
   }, [props.userInfo.userExists._id]);
 
   const onSave = async () => {
-    if (props.token) {
+    if (token) {
       const fetchD = await fetch(
         `${process.env.NEXT_PUBLIC_DB_URL}/account/${props.userInfo.userExists._id}`,
         {
           method: "PUT",
           headers: {
-            auth: props.token,
+            auth: token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ address }),
         }
       );
       const response = await fetchD.json();
+      setUserInfo(response);
+      console.log(response);
     }
   };
   return (
@@ -68,7 +91,7 @@ export default function DeliveryAddress(props: Props) {
             <IoLocationOutline className="text-2xl text-red-500" />
             <div className="text-red-500">Хүргэлтийн хаяг:</div>
             <div className="text-foreground">
-              {props.userInfo.userExists.address}
+              {userInfo ? userInfo.address : props.userInfo.userExists.address}
             </div>
             <IoIosArrowForward />
           </Button>

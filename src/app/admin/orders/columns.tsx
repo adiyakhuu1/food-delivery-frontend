@@ -23,7 +23,10 @@ export type Order = {
   createdAt: Date;
 };
 
-export const createColumn = (token: string): ColumnDef<Order>[] => [
+export const createColumn = (
+  token: string,
+  setData: React.Dispatch<React.SetStateAction<Order[]>>
+): ColumnDef<Order>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -107,28 +110,57 @@ export const createColumn = (token: string): ColumnDef<Order>[] => [
     // id: "select",
     accessorKey: "Delete",
     cell: (event) => (
-      <Link href={`admin?page=orders`}>
-        <Button
-          defaultValue={event.cell.row.original.status}
-          className={`p-2 rounded-full border bg-background text-foreground text-xs  font-bold hover:text-background`}
-          onClick={async (e) => {
-            // const { getToken } = useAuth();
-            // const token = await getToken();
-            const send = await fetch(
-              `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
-              {
-                method: "DELETE",
-                headers: { auth: token, "Content-Type": "application/json" },
-              }
-            );
-            const response = await send.json();
-          }}
-        >
-          Delete
-        </Button>
-      </Link>
+      <Button
+        defaultValue={event.cell.row.original.status}
+        className={`p-2 rounded-full border bg-background text-foreground text-xs  font-bold hover:text-background`}
+        onClick={async (e) => {
+          // const { getToken } = useAuth();
+          // const token = await getToken();
+          const send = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
+            {
+              method: "DELETE",
+              headers: { auth: token, "Content-Type": "application/json" },
+            }
+          );
+          setData((pre) =>
+            pre.filter((one) => one._id !== event.cell.row.original._id)
+          );
+        }}
+      >
+        Delete
+      </Button>
     ),
     // header: "Status",
     header: "Delete",
+  },
+  {
+    // id: "select",
+    accessorKey: "Delete Multiple",
+    cell: (event) => (
+      <Button
+        defaultValue={event.cell.row.original.status}
+        className={`p-2 rounded-full border bg-background text-foreground text-xs  font-bold hover:text-background`}
+        onClick={async (e) => {
+          console.log(event.table.getSelectedRowModel().rows);
+          const selected = event.table
+            .getSelectedRowModel()
+            .rows.map((one) => one.original._id);
+
+          fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json", auth: token },
+            body: JSON.stringify(selected),
+          });
+          selected.map((two) => {
+            setData((pre) => pre.filter((one) => one._id !== two));
+          });
+        }}
+      >
+        Delete
+      </Button>
+    ),
+    // header: "Status",
+    header: "Delete Multiple",
   },
 ];

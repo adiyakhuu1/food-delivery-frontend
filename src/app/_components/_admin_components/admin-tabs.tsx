@@ -7,6 +7,9 @@ import React, { Suspense } from "react";
 import AddCategory from "./admin-add-category";
 import { DeleteButton, TableCard } from "../orders-table-cards";
 import Orders from "@/app/admin/orders/orders";
+import TotalOrders from "../totalOrderNumber";
+import { DatePickerWithRange } from "./datePicker";
+import { CellContext } from "@tanstack/react-table";
 
 export type Dish = {
   name: string;
@@ -54,10 +57,6 @@ export default async function Tabs(props: Props) {
       console.error(error, "aldaa");
     }
   }
-  const res5 = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
-    method: "GET",
-  });
-  const reponse = await res5.json();
 
   if (page === `orders`) {
     return (
@@ -65,17 +64,12 @@ export default async function Tabs(props: Props) {
         <div className="min-h-screen border border-border rounded-lg ">
           <div className="top-1/2 absolute left-[55%] transform -translate-x-1/2 -translate-y-1/2 w-[70%]">
             <div className="h-19 flex bg-background justify-between">
-              <div className="w-1/2 p-3">
-                <h1>Захиалгууд</h1>
-                <h4 className="text-muted-foreground">
-                  {reponse && reponse.length} захиалгууд
-                </h4>
-              </div>
+              {/* asdfasdf */}
+              <TotalOrders />
               <div className="w-1/2">
-                <div className="flex gap-4 p-3 justify-end">
-                  <div className="border border-border  text-sm bg-background text-foreground rounded-full py-2 px-4">
-                    13 June 2023 - 14 July 2023
-                  </div>
+                <div className="flex gap-4 p-3 justify-end rounded-full">
+                  <DatePickerWithRange />
+
                   <div className="border border-border text-sm bg-muted text-foreground rounded-full py-2 px-4">
                     захиалгын төлөв өөрчлөх
                   </div>

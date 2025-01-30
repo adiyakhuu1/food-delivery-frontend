@@ -16,6 +16,7 @@ export default function Orders() {
   const [orders, setData] = useState<Order[]>([]);
   const [tokeen, setToken] = useState<string>("");
   const { getToken } = useAuth();
+
   useEffect(() => {
     const fetchData = async () => {
       const token = await getToken();
@@ -29,12 +30,14 @@ export default function Orders() {
         });
         const data = await res.json();
         setData(data);
+        console.log(data);
       }
     };
     fetchData();
   }, []);
   // const data = await getData();
-  const columns = createColumn(tokeen);
+
+  const columns = createColumn(tokeen, setData);
   return (
     <div className="container mx-auto py-10">
       <DataTable columns={columns} data={orders} token={tokeen} />
