@@ -9,7 +9,6 @@ import AddCategory, { newCat } from "./admin-add-category";
 import { DeleteButton, TableCard } from "../orders-table-cards";
 import Orders from "@/app/admin/orders/orders";
 import TotalOrders from "../totalOrderNumber";
-import { DatePickerWithRange } from "./datePicker";
 import { CellContext } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
