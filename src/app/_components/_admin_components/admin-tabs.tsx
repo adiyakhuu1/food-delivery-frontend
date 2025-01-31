@@ -196,7 +196,10 @@ export default function Tabs(props: Props) {
                   {categor.name}
                 </div>
 
-                <DeleteButton categor={categor} />
+                <DeleteButton
+                  setNewCategory={setNewCategory}
+                  categor={categor}
+                />
               </div>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Card categoryName={categor.name} categoryId={categor._id} />

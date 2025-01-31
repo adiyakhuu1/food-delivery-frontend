@@ -66,6 +66,7 @@ export const TableCard = () => {
 
 type deletebuttonprops = {
   categor: Dish;
+  setNewCategory: Function;
 };
 type category = {
   name: string;
@@ -121,7 +122,7 @@ export const DeleteButton = (props: deletebuttonprops) => {
       }
     );
     const dat = await res.json();
-    setData(dat);
+    props.setNewCategory(dat);
   };
   return (
     <>
