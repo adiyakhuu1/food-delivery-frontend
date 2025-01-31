@@ -126,7 +126,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       setFoods(categorizedFoods);
     };
     fetchData();
-  }, []);
+  }, [ref]);
 
   const addnewitem = async () => {
     const recCate = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/food`, {

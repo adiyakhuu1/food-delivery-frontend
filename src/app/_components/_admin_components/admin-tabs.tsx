@@ -1,15 +1,18 @@
+"use client";
 import Card from "./admin-food-card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import AdminCard from "./admin-food-card";
 import AdminCategory from "./admin-category-badge";
-import React, { Suspense } from "react";
-import AddCategory from "./admin-add-category";
+import React, { Suspense, useEffect, useState } from "react";
+import AddCategory, { newCat } from "./admin-add-category";
 import { DeleteButton, TableCard } from "../orders-table-cards";
 import Orders from "@/app/admin/orders/orders";
 import TotalOrders from "../totalOrderNumber";
 import { DatePickerWithRange } from "./datePicker";
 import { CellContext } from "@tanstack/react-table";
+import { useSearchParams } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 
 export type Dish = {
   name: string;
@@ -29,34 +32,102 @@ type Props = {
   page: string;
   category: string;
 };
-export default async function Tabs(props: Props) {
-  // const { foods, FoodCategory1, loading } = useFetchDatas();
-  const { page } = props;
+export default function Tabs(props: Props) {
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page");
   const categoryFromProps = props.category;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`);
-  const FoodCategory = await res.json();
-  const res2 = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/Food`, {
-    method: "GET",
-  });
-  const Foods = await res2.json();
-  let oneC;
+  const { getToken } = useAuth();
 
-  // if (loading) {
-  //   return <div>Loading</div>;
-  // }
-  // const allFoodCategory = useFetchDatas();
-  if (categoryFromProps) {
-    try {
-      const res4 = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/${categoryFromProps}`
-      );
-      if (res4) {
-        oneC = await res4.json();
+  const [FoodCategory, setFoodCategory] = useState([]);
+  const [allCategory, setallCategory] = useState([]);
+  const [Foods, setFoods] = useState([]);
+  const [name, setName] = useState<string>("");
+  const [newCategory, setNewCategory] = useState<newCat>({
+    name: "",
+    _id: "",
+    createdAt: "",
+    updatedAt: "",
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (categoryFromProps) {
+        try {
+          const res4 = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/${categoryFromProps}`
+          );
+          if (res4) {
+            const response = await res4.json();
+            setFoodCategory(response);
+          }
+        } catch (error) {
+          console.error(error, "aldaa");
+        }
+      } else {
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`
+          );
+          const response = await res.json();
+          setFoodCategory(response);
+        } catch (e) {
+          console.error(e, "aldaa");
+        }
       }
-    } catch (error) {
-      console.error(error, "aldaa");
+    };
+    fetchData();
+  }, [categoryFromProps, newCategory]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res2 = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/Food`, {
+        method: "GET",
+      });
+      const response = await res2.json();
+      setFoods(response);
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res2 = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
+        {
+          method: "GET",
+        }
+      );
+      const response = await res2.json();
+      setallCategory(response);
+    };
+    fetchData();
+  }, [newCategory]);
+
+  const handleClick = async () => {
+    const tokeen = await getToken();
+    if (tokeen) {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/addnew`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            auth: tokeen,
+          },
+          body: JSON.stringify({
+            name,
+          }),
+        }
+      );
+      const response = await res.json();
+      setNewCategory(response);
     }
-  }
+  };
+  // useEffect(() => {
+  //   let oneC;
+  //   const fetchData = async () => {
+  //     setFoodCategory(response);
+  //   };
+  //   fetchData();
+  // }, []);
 
   if (page === `orders`) {
     return (
@@ -67,13 +138,7 @@ export default async function Tabs(props: Props) {
               {/* asdfasdf */}
               <TotalOrders />
               <div className="w-1/2">
-                <div className="flex gap-4 p-3 justify-end rounded-full">
-                  <DatePickerWithRange />
-
-                  <div className="border border-border text-sm bg-muted text-foreground rounded-full py-2 px-4">
-                    захиалгын төлөв өөрчлөх
-                  </div>
-                </div>
+                <div className="flex gap-4 p-3 justify-end rounded-full"></div>
               </div>
             </div>
 
@@ -100,8 +165,8 @@ export default async function Tabs(props: Props) {
                   Бүгд ({Foods.length})
                 </Badge>
               </Link>
-              {FoodCategory &&
-                FoodCategory.map((category: Dish) => {
+              {allCategory &&
+                allCategory.map((category: Dish) => {
                   return (
                     <React.Fragment key={category._id}>
                       <div>
@@ -115,11 +180,11 @@ export default async function Tabs(props: Props) {
                   );
                 })}
               {/* reminder */}
-              <AddCategory />
+              <AddCategory handleClick={handleClick} setName={setName} />
             </div>
           </div>
         </div>
-        {!categoryFromProps &&
+        {FoodCategory &&
           FoodCategory.map((categor: Dish, index: number) => (
             <div
               key={categor._id}
@@ -130,6 +195,8 @@ export default async function Tabs(props: Props) {
                   {index + 1 + ". "}
                   {categor.name}
                 </div>
+
+                <DeleteButton categor={categor} />
               </div>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Card categoryName={categor.name} categoryId={categor._id} />
@@ -142,7 +209,7 @@ export default async function Tabs(props: Props) {
             return <div>Category ustgasan esvel ogt baigaagui!</div>;
           }
         })} */}
-        <Suspense>
+        {/* <Suspense>
           {oneC &&
             oneC.map((categor: Dish, index: number) => (
               <div
@@ -165,7 +232,7 @@ export default async function Tabs(props: Props) {
                 </div>
               </div>
             ))}
-        </Suspense>
+        </Suspense> */}
       </div>
     );
   }

@@ -16,30 +16,19 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTokenContext } from "../contexts/tokenContext";
-
-export default function AddCategory() {
+export type newCat = {
+  name: string;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+type Props = {
+  handleClick: Function;
+  setName: Function;
+};
+export default function AddCategory(props: Props) {
   // const { getToken } = useAuth();
 
-  const [name, setName] = useState<string>("");
-  const { token } = useTokenContext();
-  const [newCategory, setNewCategory] = useState();
-  const handleClick = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/addnew`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          auth: token,
-        },
-        body: JSON.stringify({
-          name,
-        }),
-      }
-    );
-    const response = await res.json();
-    setNewCategory(response);
-  };
   return (
     <Dialog>
       <DialogTrigger>
@@ -61,7 +50,7 @@ export default function AddCategory() {
           <label>Category name</label>
           <input
             onChange={(e) => {
-              setName(e.target.value);
+              props.setName(e.target.value);
             }}
             className="border border-border h-9 w-full"
           />
@@ -72,7 +61,7 @@ export default function AddCategory() {
             <Button
               className="bg-foreground text-background flex p-3 rounded-xl"
               onClick={() => {
-                handleClick();
+                props.handleClick();
               }}
             >
               Save Changes
