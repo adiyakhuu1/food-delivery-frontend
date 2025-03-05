@@ -7,17 +7,21 @@ import { ChangeEvent, useEffect, useState } from "react";
 import z from "zod";
 import axios from "axios";
 import { response } from "@/app/types/types";
+import { useRouter } from "next/navigation";
+import { ImSpinner10 } from "react-icons/im";
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 });
 
 export default function Login() {
+  const router = useRouter();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const [response, setResponse] = useState<response>();
+  const [loading, setLoading] = useState(false);
   const result = formSchema.safeParse(form);
   const errors = result.error?.formErrors.fieldErrors;
 
@@ -29,11 +33,28 @@ export default function Login() {
       [field]: value,
     }));
   };
+  useEffect(() => {
+    if (response?.success && response.code === "LOGGED_IN_SUCCESSFULLY") {
+      router.push("/");
+    }
+  }, [response]);
   const login = async () => {
-    const res = await axios.post(`/api/user/login`, form);
-    setResponse(res.data);
+    setLoading(true);
+    try {
+      const res = await axios.post(`/api/user/login`, form);
+      setResponse(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err, "Сервэртэй холбогдож чадсангүй!");
+      setResponse({
+        success: false,
+        code: "FAILED_CONNECTION",
+        message: "Сервэртэй холбогдож чадсангүй!",
+        data: null,
+      });
+      setLoading(false);
+    }
   };
-  console.log(result);
   return (
     <div className="w-4/5 flex flex-col gap-4">
       <div className="h-15">
@@ -88,8 +109,21 @@ export default function Login() {
           {response?.message && response.message}
         </div>
 
-        <Button onClick={login} disabled={!result.success} className="w-full">
-          Үргэлжлүүлэх
+        <Button
+          onClick={login}
+          disabled={!result.success || loading}
+          className="w-full"
+        >
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <div>Түр хүлээнэ үү!</div>
+              <div>
+                <ImSpinner10 className=" animate-spin" />
+              </div>
+            </div>
+          ) : (
+            `Үргэлжлүүлэх`
+          )}
         </Button>
       </div>
       <div className="flex justify-center gap-4">

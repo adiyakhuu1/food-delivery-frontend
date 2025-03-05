@@ -10,6 +10,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import z from "zod";
 import { response } from "@/app/types/types";
+import { ImSpinner10 } from "react-icons/im";
 const formSchema = z
   .object({
     email: z.string().email(),
@@ -38,14 +39,15 @@ export default function Login() {
     passwordConfirm: "",
   });
   const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<response>();
-  let errorMessages: string[] = [];
 
   const [errors, setErrors] = useState<Error>({
     success: false,
     error: { email: false, password: false, passwordConfirm: false },
   });
   useEffect(() => {
+    setResponse(undefined);
     const result = formSchema.safeParse(form);
     if (result.success) {
       setErrors({
@@ -64,24 +66,33 @@ export default function Login() {
           passwordConfirm: !!errors.passwordConfirm,
         },
       });
-
       setIsValid(false);
     }
-    console.log(result);
   }, [form]);
   const HandleSignup = async () => {
-    const res = await axios.post(`/api/user/create`, {
-      email: form.email,
-      password: form.password,
-    });
-    setResponse(res.data);
-    console.log(res);
+    setLoading(true);
+    try {
+      const res = await axios.post(`/api/user/create`, {
+        email: form.email,
+        password: form.password,
+      });
+      setResponse(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err, "Сервэртэй холбогдож чадсангүй!");
+      setResponse({
+        success: false,
+        code: "FAILED_CONNECTION",
+        message: "Сервэртэй холбогдож чадсангүй!",
+        data: null,
+      });
+      setLoading(false);
+    }
   };
   const handleFormInfo = (event: ChangeEvent<HTMLInputElement>) => {
     const field = event.target.name;
     const { value } = event.target;
     setForm((p) => ({ ...p, [field]: value }));
-    // setResponse(undefined);
   };
   return (
     <div className="w-4/5 flex flex-col gap-4">
@@ -143,10 +154,29 @@ export default function Login() {
           )}
         </div>
       )}
-      {response?.message && response.message}
+      <div
+        className={`${
+          response?.success ? ` text-green-400` : ` text-red-400`
+        } text-sm`}
+      >
+        {response?.message && response.message}
+      </div>
       <div>
-        <Button onClick={HandleSignup} disabled={!isValid} className="w-full">
-          Үргэлжлүүлэх
+        <Button
+          onClick={HandleSignup}
+          disabled={!isValid || loading}
+          className="w-full"
+        >
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <div>Түр хүлээнэ үү!</div>
+              <div>
+                <ImSpinner10 className=" animate-spin" />
+              </div>
+            </div>
+          ) : (
+            `Үргэлжлүүлэх`
+          )}
         </Button>
       </div>
       <div className="flex justify-center gap-4">

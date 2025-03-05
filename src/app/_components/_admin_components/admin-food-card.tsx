@@ -41,7 +41,7 @@ import {
   useRouter,
 } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useCategoryHook } from "../custom-hooks/cat-hook";
+import axios from "axios";
 // import { useCategoryHook } from "../custom-hooks/user-hooks";
 
 type Props = {
@@ -60,9 +60,9 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   const [foods, setFoods] = useState<Food[]>([]);
   const [responseFromBackend, setResponseFromBackend] = useState();
   // const [ingredients, setIngre] = useState<string>("");
-  // const [categories, setAllCategory] = useState<Dish[]>([]);
-  const { categories, Loading } = useCategoryHook();
+  const [categories, setAllCategory] = useState<Dish[]>([]);
   const [image, setImage] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   const [price, setPrice] = useState<number>(1);
   // edit states
@@ -80,21 +80,20 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     error: false,
     success: false,
   });
-  // useEffect(() => {
-  //   setForm({
-  //     foodName: "",
-  //     price: 1,
-  //     ingredients: "",
-  //     category: "",
-  //   });
-  //   const fetchToken = async () => {
-  //     const token = await getToken();
-  //     if (token) {
-  //       setToken(token);
-  //     }
-  //   };
-  //   fetchToken();
-  // }, []);
+  useEffect(() => {
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("/api/category");
+        setAllCategory(res.data.data.categories);
+        setLoading(false);
+      } catch (err) {
+        console.error(err, "aldaa");
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     if (alerts.success || alerts.error) {
@@ -347,7 +346,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
 
       {foods.map((food) => (
         <div
-          key={food._id}
+          key={food.id}
           className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
         >
           {/* edit dialog here */}
@@ -355,7 +354,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
           <Dialog>
             <DialogTrigger
               onClick={() => {
-                setFoodId(food._id);
+                setFoodId(food.id);
                 setImage(food.image);
                 setForm({
                   foodName: food.foodName,
@@ -412,8 +411,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           //   setEditCategory(cate._id);
                           //   console.log(changeCategory);
                           // }}
-                          key={cate._id}
-                          value={`${cate._id}`}
+                          key={cate.id}
+                          value={`${cate.id}`}
                           className="text-foreground bg-background"
                         >
                           {cate.name}

@@ -10,11 +10,14 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Section from "./_reusable/section";
 import CategoryBadge from "./_reusable/category-badge";
+import axios from "axios";
+import { ImSpinner10 } from "react-icons/im";
+import { FoodCategory } from "@prisma/client";
 
 export default function Categories() {
   // states
-  const [categories, setCategories] = useState<Dish[]>([]);
-  const [token, setToken] = useState("");
+  const [categories, setCategories] = useState<FoodCategory[]>([]);
+  const [loading, setLoading] = useState(false);
   // search params
   const searchParams = useSearchParams();
   const categoryFromParams: string | null = searchParams.get("category");
@@ -31,30 +34,20 @@ export default function Categories() {
       scrollingBade.current.scrollBy({ left: 200, behavior: "smooth" });
     }
   };
-
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
-        {
-          method: "GET",
-        }
-      );
-      const categories: Dish[] = await response.json();
-      setCategories(categories);
+      try {
+        const res = await axios.get("/api/category");
+        setCategories(res.data.data.categories);
+        setLoading(false);
+      } catch (err) {
+        console.error(err, "aldaa");
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
-  // useEffect(() => {
-  //   const dosomething = async () => {
-  //     const token = await getToken();
-  //     if (token) {
-  //       setToken(token);
-  //     }
-  //   };
-  //   dosomething();
-  // }, []);
-
   return (
     <div className="w-full justify-items-center">
       <div className="w-[90%] flex flex-col gap-5">
@@ -69,11 +62,15 @@ export default function Categories() {
               ref={scrollingBade}
               className="flex overflow-x-scroll whitespace-nowrap scrollbar-none"
             >
-              {categories.map((category: Dish) => (
-                <Link href={`/?category=${category._id}`} key={category._id}>
+              {categories.map((category: FoodCategory) => (
+                <Link
+                  scroll={false}
+                  href={`/?category=${category.id}`}
+                  key={category.id}
+                >
                   <div>
                     <CategoryBadge
-                      key={category._id}
+                      key={category.id}
                       category={category}
                       categoryFromParams={categoryFromParams}
                     />
@@ -87,23 +84,34 @@ export default function Categories() {
           </div>
         </div>
       </div>
-      <div className="categories w-[90%] flex flex-wrap gap-10 my-10">
-        {!categoryFromParams &&
-          categories.map((category) => (
-            <React.Fragment key={category._id}>
-              <Section category={category} />
-            </React.Fragment>
-          ))}
-        {categoryFromParams &&
-          categories.map((category) => {
-            if (category._id === categoryFromParams) {
-              return (
-                <React.Fragment key={category._id}>
+      <div className="categories w-[90%] flex flex-wrap gap-10 my-10 justify-center">
+        {loading ? (
+          <div className="text-white flex  items-center gap-2">
+            <div>Түр хүлээнэ үү...</div>
+            <div>
+              <ImSpinner10 className=" animate-spin" />
+            </div>
+          </div>
+        ) : (
+          <>
+            {!categoryFromParams &&
+              categories.map((category) => (
+                <React.Fragment key={category.id}>
                   <Section category={category} />
                 </React.Fragment>
-              );
-            }
-          })}
+              ))}
+            {categoryFromParams &&
+              categories.map((category) => {
+                if (category.id === categoryFromParams) {
+                  return (
+                    <React.Fragment key={category.id}>
+                      <Section category={category} />
+                    </React.Fragment>
+                  );
+                }
+              })}
+          </>
+        )}
       </div>
     </div>
   );

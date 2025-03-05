@@ -2,68 +2,64 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// prisma/schema.prisma
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
-
 model FoodCategory {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime?
+  id        String   @id @default(nanoid()) 
+  createdAt DateTime @default(now())
   name      String
-  updatedAt DateTime?
 
   @@map("food-category")
   Foods Foods[]
 }
 
 model FoodOrderItem {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt  DateTime?  @db.Date
+  id         String     @id @default(nanoid()) 
+  createdAt  DateTime?  @db.Date @default(now())
   food       Foods      @relation(fields: [foodId], references: [id])
-  foodId     String     @db.ObjectId
+  foodId     String    
   quantity   Int
-  updatedAt  DateTime?  @db.Date
   foodOrder  FoodOrder? @relation("OrderToItems", fields: [foodOrderId], references: [id])
-  foodOrderId String?    @db.ObjectId
+  foodOrderId String?   
 
   @@map("foodorderitems")
 }
 
 model FoodOrder {
-  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  id             String          @id @default(nanoid()) 
   user           User            @relation(fields: [userId], references: [id])
-  userId         String          @db.ObjectId
+  userId         String        
   createdAt      DateTime        @default(now())
   totalPrice     Int
   foodOrderItems FoodOrderItem[] @relation("OrderToItems")
-  status         String
-  address        String
 
   @@index([createdAt], map: "createdAt_1")
   @@map("foodorders")
 }
 
 model Foods {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  category    FoodCategory @relation(fields: [categoryId], references: [id])
-  categoryId  String       @db.ObjectId
-  createdAt   DateTime
+  id          String       @id @default(nanoid()) 
   foodName    String
+  price       Int
   image       String?
   ingredients String
-  price       Int
-  updatedAt   DateTime
-
+  createdAt   DateTime @default(now())
+  categoryId  String       
+  category    FoodCategory @relation(fields: [categoryId], references: [id])
   @@map("foods")
+
   FoodOrderItem FoodOrderItem[]
 }
 
+
 model User {
-  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  id           String       @id @default(nanoid())
   address      String?
   createdAt    DateTime @default(now())
-  email        String
+  email        String @unique
   password     String
   role         String @default("ADMIN")
   orderedFoods FoodOrder[]

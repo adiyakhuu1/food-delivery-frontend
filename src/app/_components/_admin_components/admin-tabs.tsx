@@ -11,13 +11,15 @@ import Orders from "@/app/admin/orders/orders";
 import TotalOrders from "../totalOrderNumber";
 import { CellContext } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
 
 export type Dish = {
   name: string;
-  _id: string;
+  id: string;
+  Foods: Food[];
 };
 export type Food = {
-  _id: string;
+  id: string;
   foodName: string;
   price: number;
   image: string;
@@ -84,20 +86,30 @@ export default function Tabs(props: Props) {
     };
     fetchData();
   }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res2 = await fetch(
+  //       `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const response = await res2.json();
+  //     setallCategory(response);
+  //   };
+  //   fetchData();
+  // }, [newCategory]);
   useEffect(() => {
     const fetchData = async () => {
-      const res2 = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
-        {
-          method: "GET",
-        }
-      );
-      const response = await res2.json();
-      setallCategory(response);
+      try {
+        const res = await axios.get("/api/category");
+        setallCategory(res.data.data.categories);
+      } catch (err) {
+        console.error(err, "aldaa");
+      }
     };
     fetchData();
-  }, [newCategory]);
-
+  }, []);
   // const handleClick = async () => {
   //   if (tokeen) {
   //     const res = await fetch(
@@ -164,10 +176,10 @@ export default function Tabs(props: Props) {
               {allCategory &&
                 allCategory.map((category: Dish) => {
                   return (
-                    <React.Fragment key={category._id}>
+                    <React.Fragment key={category.id}>
                       <div>
                         <AdminCategory
-                          id={category._id}
+                          id={category.id}
                           name={category.name}
                           style={categoryFromProps}
                         />
@@ -183,7 +195,7 @@ export default function Tabs(props: Props) {
         {FoodCategory &&
           FoodCategory.map((categor: Dish, index: number) => (
             <div
-              key={categor._id}
+              key={categor.id}
               className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
             >
               <div className="text-foreground text-xl font-extrabold flex justify-between">
@@ -198,7 +210,7 @@ export default function Tabs(props: Props) {
                 />
               </div>
               <div className="flex flex-wrap gap-4 justify-center">
-                <Card categoryName={categor.name} categoryId={categor._id} />
+                <Card categoryName={categor.name} categoryId={categor.id} />
               </div>
             </div>
           ))}

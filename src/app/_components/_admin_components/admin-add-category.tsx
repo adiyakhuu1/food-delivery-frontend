@@ -14,7 +14,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTokenContext } from "../contexts/tokenContext";
 export type newCat = {
   name: string;
   _id: string;

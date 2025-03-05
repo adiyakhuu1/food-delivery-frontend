@@ -213,14 +213,14 @@ function Card({ categoryId, categoryName }: Props) {
 
       {foods.map((food) => (
         <div
-          key={food._id}
+          key={food.id}
           className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl"
         >
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
               onClick={() => {
-                setFoodId(food._id);
+                setFoodId(food.id);
                 setEditCategory(food.category);
                 setFoodName(food.foodName);
                 setIngre(food.ingredients);
@@ -268,8 +268,8 @@ function Card({ categoryId, categoryName }: Props) {
                     >
                       {categories.map((cate) => (
                         <option
-                          key={cate._id}
-                          value={`${cate._id}`}
+                          key={cate.id}
+                          value={`${cate.id}`}
                           className="text-foreground bg-background"
                         >
                           {cate.name}

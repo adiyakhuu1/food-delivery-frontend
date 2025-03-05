@@ -34,7 +34,7 @@ export default async function App({ params }: Props) {
           <div>
             {categories ? (
               categories.map((category: Dish) => (
-                <Link href={`/${category._id}`} key={category._id}>
+                <Link href={`/${category.id}`} key={category.id}>
                   <CategoryBadge
                     category={category}
                     categoryFromParams={category_id}
@@ -49,8 +49,8 @@ export default async function App({ params }: Props) {
           <div className="categories w-[90%] flex flex-wrap gap-10 my-10">
             {categories ? (
               categories.map((category) => {
-                if (category_id === category._id) {
-                  return <Section key={category._id} category={category} />;
+                if (category_id === category.id) {
+                  return <Section key={category.id} category={category} />;
                 }
               })
             ) : (

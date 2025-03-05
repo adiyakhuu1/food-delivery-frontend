@@ -44,8 +44,8 @@ export default function Badges() {
             className="flex overflow-x-scroll whitespace-nowrap scrollbar-none"
           >
             {categories.map((category: Dish) => (
-              <Link href={`/food?categor=${category._id}`} key={category._id}>
-                <CategoryBadge key={category._id} category={category} />
+              <Link href={`/food?categor=${category.id}`} key={category.id}>
+                <CategoryBadge key={category.id} category={category} />
               </Link>
             ))}
           </div>

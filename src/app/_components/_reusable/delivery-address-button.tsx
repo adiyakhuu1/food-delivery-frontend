@@ -11,8 +11,6 @@ import {
 import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoLocationOutline } from "react-icons/io5";
-import { useTokenContext } from "../contexts/tokenContext";
-import { useUserHook } from "../custom-hooks/user-hooks";
 import { userInfo } from "os";
 export type userInfo = {
   message: string;
@@ -29,27 +27,10 @@ export type userInfo = {
     __v: number;
   };
 };
-type Props = {
-  userInfo: userInfo;
-  token: string;
-};
-type user = {
-  _id: string;
-  email: string;
-  password: string;
-  phoneNumber: number;
-  address: string;
-  role: string;
-  isVerified: boolean;
-  createdAt: boolean;
-  updatedAt: boolean;
-  __v: number;
-};
-export default function DeliveryAddress(props: Props) {
+
+export default function DeliveryAddress() {
   const [address, setAddress] = useState("");
   const [token, setToken] = useState("");
-  const [userInfo, setUserInfo] = useState<user>();
-  const { user } = useUserHook();
   // const { token } = useTokenHook();
   // useEffect(() => {
   //   const fetch = async () => {
@@ -62,24 +43,6 @@ export default function DeliveryAddress(props: Props) {
   //   localStorage.setItem("userId", props.userInfo.userExists._id);
   // }, [props.userInfo.userExists._id]);
 
-  const onSave = async () => {
-    if (token) {
-      const fetchD = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/account/${props.userInfo.userExists._id}`,
-        {
-          method: "PUT",
-          headers: {
-            auth: token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ address }),
-        }
-      );
-      const response = await fetchD.json();
-      setUserInfo(response);
-      console.log(response);
-    }
-  };
   return (
     <>
       <Dialog>
@@ -88,7 +51,7 @@ export default function DeliveryAddress(props: Props) {
             <IoLocationOutline className="text-2xl text-red-500" />
             <div className="text-red-500">Хүргэлтийн хаяг:</div>
             <div className="text-foreground">
-              {userInfo ? userInfo.address : props.userInfo.userExists.address}
+              {/* {userInfo ? userInfo.address : props.userInfo.userExists.address} */}
             </div>
             <IoIosArrowForward />
           </Button>
@@ -113,7 +76,7 @@ export default function DeliveryAddress(props: Props) {
             </DialogClose>
             <DialogClose asChild>
               <div>
-                <Button onClick={onSave}>Хадгалах</Button>
+                <Button>Хадгалах</Button>
               </div>
             </DialogClose>
           </div>

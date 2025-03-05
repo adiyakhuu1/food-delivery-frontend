@@ -1,7 +1,7 @@
 "use client";
 
 import { foodOrderItems } from "@/app/_components/contexts/OrderContext";
-import { user } from "@/app/_components/custom-hooks/user-hooks";
+// import { user } from "@/app/_components/custom-hooks/user-hooks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
@@ -13,7 +13,7 @@ import React, { useEffect } from "react";
 // You can use a Zod schema here if you want.
 export type Order = {
   _id: string;
-  user: user;
+  // user: user;
   food: foodOrderItems[];
   date: number;
   totalPrice: number;
