@@ -20,7 +20,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -75,7 +74,6 @@ type category = {
 export const DeleteButton = (props: deletebuttonprops) => {
   const [token, setToken] = useState("");
   const [data, setData] = useState<category[]>([]);
-  const { getToken } = useAuth();
   const [count, setCount] = useState(3);
   const [wait, setWait] = useState(false);
 
@@ -99,15 +97,6 @@ export const DeleteButton = (props: deletebuttonprops) => {
     localStorage.setItem("allCategories", JSON.stringify(data));
   }, [data]);
 
-  useEffect(() => {
-    const dosomething = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-      }
-    };
-    dosomething();
-  }, []);
   const { categor } = props;
   const path = usePathname();
   const searchParams = useSearchParams();

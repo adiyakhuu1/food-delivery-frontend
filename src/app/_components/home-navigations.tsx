@@ -6,7 +6,6 @@ import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { Pfp } from "./_reusable/pfp";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, useAuth, useClerk } from "@clerk/nextjs";
 import DeliveryAddress, { userInfo } from "./_reusable/delivery-address-button";
 import Cart from "./_reusable/cart-button";
 import {
@@ -40,7 +39,6 @@ export default function Navigaion() {
   const { foodsInfo, setFoodsInfo } = useFoodContext();
   const [success, setSucces] = useState(false);
   const [isFailed, setFailed] = useState<boolean>(false);
-  const { getToken } = useAuth();
 
   const changedOrder = order;
 
@@ -54,7 +52,6 @@ export default function Navigaion() {
   };
   const { price } = calculateTotalPrice();
   const { totalPrice } = calculateTotalPrice();
-  const { user } = useClerk();
   useEffect(() => {
     let interval = setTimeout(() => {
       setSucces(false);
@@ -63,39 +60,28 @@ export default function Navigaion() {
       clearTimeout(interval);
     };
   }, [success]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/account/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: user?.emailAddresses[0].emailAddress,
-            password: user?.id,
-          }),
-        }
-      );
-      const data = await res.json();
-      setUserInfo(data);
-    };
-    fetchData();
-  }, [user]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await fetch(
+  //       `${process.env.NEXT_PUBLIC_DB_URL}/account/signup`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           email: user?.emailAddresses[0].emailAddress,
+  //           password: user?.id,
+  //         }),
+  //       }
+  //     );
+  //     const data = await res.json();
+  //     setUserInfo(data);
+  //   };
+  //   fetchData();
+  // }, [user]);
   // const [form, setForm] = useState({
-  useEffect(() => {
-    setFailed(false);
-  }, [order]);
-  useEffect(() => {
-    const dosomething = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-      }
-    };
-    dosomething();
-  }, []);
+
   // useEffect(() => {
   //   const fetchdata = async () => {
   //     const fetchd = await fetch(
@@ -114,29 +100,29 @@ export default function Navigaion() {
     foodOrderItems: order,
   };
 
-  const addOrder = async () => {
-    if (user) {
-      const senddata = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            auth: token,
-          },
-          body: JSON.stringify(form),
-        }
-      );
-      const response = await senddata.json();
-      setResponse(response.message);
-      if (response.message === "success") {
-        setOrder([]);
-        setFoodsInfo([]);
-      }
-    } else {
-      alert("Please login!");
-    }
-  };
+  // const addOrder = async () => {
+  //   if (user) {
+  //     const senddata = await fetch(
+  //       `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           auth: token,
+  //         },
+  //         body: JSON.stringify(form),
+  //       }
+  //     );
+  //     const response = await senddata.json();
+  //     setResponse(response.message);
+  //     if (response.message === "success") {
+  //       setOrder([]);
+  //       setFoodsInfo([]);
+  //     }
+  //   } else {
+  //     alert("Please login!");
+  //   }
+  // };
   const onDelete = (id: string) => {
     const findfood: foods[] = foodsInfo.filter((food) => food._id !== id);
     const findOrder: foodOrderItems[] = order.filter((ord) => ord.food !== id);
@@ -149,7 +135,7 @@ export default function Navigaion() {
         <div>
           <Logo style="text-background" />
         </div>
-        {user && (
+        {/* {user && (
           <div className="text-background">
             <div>Сайн байна уу! {user.fullName}</div>
 
@@ -162,7 +148,7 @@ export default function Navigaion() {
               </Link>
             )}
           </div>
-        )}
+        )} */}
         {/* <div>Hi adiyakhuu</div> */}
         <div className="flex gap-3">
           {userInfo && <DeliveryAddress userInfo={userInfo} token={token} />}
@@ -326,7 +312,7 @@ export default function Navigaion() {
                             if (order.length < 0) {
                               return;
                             } else {
-                              addOrder();
+                              // addOrder();
                               setFailed(true);
                               setSucces(true);
                             }

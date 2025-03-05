@@ -32,7 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@clerk/nextjs";
 type Props = {
   categoryId: string;
   categoryName: string;
@@ -45,7 +44,6 @@ function Card({ categoryId, categoryName }: Props) {
   const [ingredients, setIngre] = useState<string>("");
   const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
-  const { getToken } = useAuth();
 
   const [price, setPrice] = useState<number>(1);
   // edit states
@@ -79,17 +77,6 @@ function Card({ categoryId, categoryName }: Props) {
     };
     fetchData();
   }, [ref]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-      }
-
-      setAllCategory(categories);
-    };
-    fetchData();
-  }, []);
 
   const addnewitem = async () => {
     const recCate = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/food`, {

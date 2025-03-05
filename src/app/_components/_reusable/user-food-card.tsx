@@ -14,7 +14,6 @@ import {
 import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Pfp } from "./pfp";
 import { useCartContext } from "@/app/_components/contexts/OrderContext";
 import { useFoodContext } from "@/app/_components/contexts/FoodInfoContext";
@@ -189,7 +188,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                       </Button>
                     </div>
                   </div>
-                  <SignedIn>
+                  {/* <SignedIn>
                     <DialogClose asChild>
                       <Button
                         onClick={() => {
@@ -227,8 +226,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         Сагсанд нэмэх
                       </Button>
                     </DialogClose>
-                  </SignedIn>
-                  <SignedOut>
+                  </SignedIn> */}
+                  {/* <SignedOut>
                     <div className="flex items-center gap-4 justify-center">
                       <SignInButton>
                         <div>
@@ -237,7 +236,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         </div>
                       </SignInButton>
                     </div>
-                  </SignedOut>
+                  </SignedOut> */}
                 </div>
               </div>
             </DialogContent>

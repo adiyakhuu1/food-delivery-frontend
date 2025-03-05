@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model FoodCategory {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime?
+  name      String
+  updatedAt DateTime?
+
+  @@map("food-category")
+  Foods Foods[]
+}
+
+model FoodOrderItem {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime?  @db.Date
+  food       Foods      @relation(fields: [foodId], references: [id])
+  foodId     String     @db.ObjectId
+  quantity   Int
+  updatedAt  DateTime?  @db.Date
+  foodOrder  FoodOrder? @relation("OrderToItems", fields: [foodOrderId], references: [id])
+  foodOrderId String?    @db.ObjectId
+
+  @@map("foodorderitems")
+}
+
+model FoodOrder {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  user           User            @relation(fields: [userId], references: [id])
+  userId         String          @db.ObjectId
+  createdAt      DateTime        @default(now())
+  totalPrice     Int
+  foodOrderItems FoodOrderItem[] @relation("OrderToItems")
+  status         String
+  address        String
+
+  @@index([createdAt], map: "createdAt_1")
+  @@map("foodorders")
+}
+
+model Foods {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  category    FoodCategory @relation(fields: [categoryId], references: [id])
+  categoryId  String       @db.ObjectId
+  createdAt   DateTime
+  foodName    String
+  image       String?
+  ingredients String
+  price       Int
+  updatedAt   DateTime
+
+  @@map("foods")
+  FoodOrderItem FoodOrderItem[]
+}
+
+model User {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  address      String?
+  createdAt    DateTime @default(now())
+  email        String
+  password     String
+  role         String @default("ADMIN")
+  orderedFoods FoodOrder[]
+
+  @@map("users")
+}

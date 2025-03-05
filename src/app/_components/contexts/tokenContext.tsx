@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "@clerk/nextjs";
 import {
   createContext,
   SetStateAction,
@@ -21,16 +20,15 @@ export const TokenProvider = ({
   children: React.ReactNode;
 }>) => {
   const [token, setToken] = useState<token>("");
-  const { getToken } = useAuth();
-  useEffect(() => {
-    const fetchData = async () => {
-      const tokeen = await getToken();
-      if (tokeen) {
-        setToken(tokeen);
-      }
-    };
-    fetchData();
-  }, [token]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const tokeen = await getToken();
+  //     if (tokeen) {
+  //       setToken(tokeen);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [token]);
   return (
     <tokenContext.Provider value={{ token, setToken }}>
       {children}

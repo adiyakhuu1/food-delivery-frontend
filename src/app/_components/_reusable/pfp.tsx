@@ -4,28 +4,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  SignedIn,
-  SignedOut,
-  SignIn,
-  SignInButton,
-  UserButton,
-} from "@clerk/nextjs";
+import Image from "next/image";
+import Link from "next/link";
 import { CiUser } from "react-icons/ci";
 
 export const Pfp = () => {
   return (
-    <>
-      <SignedOut>
-        <SignInButton>
-          <button className="p-3 bg-red-500 rounded-full">
-            <CiUser className="text-xl text-primary-foreground" />
-          </button>
-        </SignInButton>
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-    </>
+    <div className="flex items-center">
+      <Link href={`/account/signup`}>
+        <Image src={`/globe.svg`} width={40} height={40} alt="pfp" />
+      </Link>
+    </div>
   );
 };

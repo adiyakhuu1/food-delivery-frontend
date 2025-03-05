@@ -11,7 +11,6 @@ import Orders from "@/app/admin/orders/orders";
 import TotalOrders from "../totalOrderNumber";
 import { CellContext } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
 
 export type Dish = {
   name: string;
@@ -35,7 +34,6 @@ export default function Tabs(props: Props) {
   const searchParams = useSearchParams();
   const page = searchParams.get("page");
   const categoryFromProps = props.category;
-  const { getToken } = useAuth();
 
   const [FoodCategory, setFoodCategory] = useState([]);
   const [allCategory, setallCategory] = useState([]);
@@ -100,26 +98,25 @@ export default function Tabs(props: Props) {
     fetchData();
   }, [newCategory]);
 
-  const handleClick = async () => {
-    const tokeen = await getToken();
-    if (tokeen) {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/addnew`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            auth: tokeen,
-          },
-          body: JSON.stringify({
-            name,
-          }),
-        }
-      );
-      const response = await res.json();
-      setNewCategory(response);
-    }
-  };
+  // const handleClick = async () => {
+  //   if (tokeen) {
+  //     const res = await fetch(
+  //       `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/addnew`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           auth: tokeen,
+  //         },
+  //         body: JSON.stringify({
+  //           name,
+  //         }),
+  //       }
+  //     );
+  //     const response = await res.json();
+  //     setNewCategory(response);
+  //   }
+  // };
   // useEffect(() => {
   //   let oneC;
   //   const fetchData = async () => {
@@ -179,7 +176,7 @@ export default function Tabs(props: Props) {
                   );
                 })}
               {/* reminder */}
-              <AddCategory handleClick={handleClick} setName={setName} />
+              {/* <AddCategory handleClick={handleClick} setName={setName} /> */}
             </div>
           </div>
         </div>

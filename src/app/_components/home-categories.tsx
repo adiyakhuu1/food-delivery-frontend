@@ -10,7 +10,6 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Section from "./_reusable/section";
 import CategoryBadge from "./_reusable/category-badge";
-import { useAuth } from "@clerk/nextjs";
 
 export default function Categories() {
   // states
@@ -33,7 +32,6 @@ export default function Categories() {
     }
   };
 
-  const { getToken } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
@@ -47,15 +45,15 @@ export default function Categories() {
     };
     fetchData();
   }, []);
-  useEffect(() => {
-    const dosomething = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-      }
-    };
-    dosomething();
-  }, []);
+  // useEffect(() => {
+  //   const dosomething = async () => {
+  //     const token = await getToken();
+  //     if (token) {
+  //       setToken(token);
+  //     }
+  //   };
+  //   dosomething();
+  // }, []);
 
   return (
     <div className="w-full justify-items-center">

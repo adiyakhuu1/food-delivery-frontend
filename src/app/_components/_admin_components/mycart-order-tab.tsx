@@ -4,7 +4,6 @@ import { Suspense, useEffect, useState } from "react";
 import { useTokenHook } from "../custom-hooks/token-hook";
 import { Order } from "@/app/admin/orders/columns";
 import { foodOrderItems } from "../contexts/OrderContext";
-import { useClerk } from "@clerk/nextjs";
 import { userInfo } from "../_reusable/delivery-address-button";
 import Image from "next/image";
 type foodOrder = {

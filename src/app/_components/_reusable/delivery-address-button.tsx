@@ -13,9 +13,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoLocationOutline } from "react-icons/io5";
 import { useTokenContext } from "../contexts/tokenContext";
 import { useUserHook } from "../custom-hooks/user-hooks";
-import { useTokenHook } from "../custom-hooks/token-hook";
 import { userInfo } from "os";
-import { useAuth } from "@clerk/nextjs";
 export type userInfo = {
   message: string;
   userExists: {
@@ -48,22 +46,21 @@ type user = {
   __v: number;
 };
 export default function DeliveryAddress(props: Props) {
-  const { getToken } = useAuth();
   const [address, setAddress] = useState("");
   const [token, setToken] = useState("");
   const [userInfo, setUserInfo] = useState<user>();
   const { user } = useUserHook();
   // const { token } = useTokenHook();
-  useEffect(() => {
-    const fetch = async () => {
-      const tokeen = await getToken();
-      if (tokeen) {
-        setToken(tokeen);
-      }
-    };
-    fetch();
-    localStorage.setItem("userId", props.userInfo.userExists._id);
-  }, [props.userInfo.userExists._id]);
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const tokeen = await getToken();
+  //     if (tokeen) {
+  //       setToken(tokeen);
+  //     }
+  //   };
+  //   fetch();
+  //   localStorage.setItem("userId", props.userInfo.userExists._id);
+  // }, [props.userInfo.userExists._id]);
 
   const onSave = async () => {
     if (token) {

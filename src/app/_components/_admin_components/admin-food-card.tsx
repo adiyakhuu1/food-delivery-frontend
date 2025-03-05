@@ -41,7 +41,6 @@ import {
   useRouter,
 } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@clerk/nextjs";
 import { useCategoryHook } from "../custom-hooks/cat-hook";
 // import { useCategoryHook } from "../custom-hooks/user-hooks";
 
@@ -52,7 +51,6 @@ type Props = {
 
 configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
-  const { getToken } = useAuth();
   const path = usePathname();
   // add states
   const searchParams = useSearchParams();
@@ -82,21 +80,21 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     error: false,
     success: false,
   });
-  useEffect(() => {
-    setForm({
-      foodName: "",
-      price: 1,
-      ingredients: "",
-      category: "",
-    });
-    const fetchToken = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-      }
-    };
-    fetchToken();
-  }, []);
+  // useEffect(() => {
+  //   setForm({
+  //     foodName: "",
+  //     price: 1,
+  //     ingredients: "",
+  //     category: "",
+  //   });
+  //   const fetchToken = async () => {
+  //     const token = await getToken();
+  //     if (token) {
+  //       setToken(token);
+  //     }
+  //   };
+  //   fetchToken();
+  // }, []);
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     if (alerts.success || alerts.error) {

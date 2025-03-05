@@ -4,7 +4,6 @@ import { foodOrderItems } from "@/app/_components/contexts/OrderContext";
 import { user } from "@/app/_components/custom-hooks/user-hooks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useAuth } from "@clerk/nextjs";
 import { ColumnDef } from "@tanstack/react-table";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";

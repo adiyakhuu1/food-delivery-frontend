@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./_components/contexts/theme-provider";
 import { Suspense } from "react";
-import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "./_components/contexts/OrderContext";
 import { FoodsProvider } from "./_components/contexts/FoodInfoContext";
 import { TokenProvider } from "./_components/contexts/tokenContext";
@@ -35,13 +34,9 @@ export default function RootLayout({
       >
         <Suspense>
           <FoodsProvider>
-            <ClerkProvider>
-              <TokenProvider>
-                <CartProvider>
-                  <ThemeProvider>{children}</ThemeProvider>
-                </CartProvider>
-              </TokenProvider>
-            </ClerkProvider>
+            <CartProvider>
+              <ThemeProvider>{children}</ThemeProvider>
+            </CartProvider>
           </FoodsProvider>
         </Suspense>
       </body>
