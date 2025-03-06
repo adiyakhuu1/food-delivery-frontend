@@ -4,7 +4,7 @@ import { Dish, Food } from "./_admin_components/admin-tabs";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
 import { Card } from "@/components/ui/card";
-import UserFoodCard from "./_reusable/user-food-card";
+import UserFoodCard, { CustomCategory } from "./_reusable/user-food-card";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -16,7 +16,7 @@ import { FoodCategory } from "@prisma/client";
 
 export default function Categories() {
   // states
-  const [categories, setCategories] = useState<FoodCategory[]>([]);
+  const [categories, setCategories] = useState<CustomCategory[]>([]);
   const [loading, setLoading] = useState(false);
   // search params
   const searchParams = useSearchParams();

@@ -5,7 +5,6 @@ import { ThemeProvider } from "./_components/contexts/theme-provider";
 import { Suspense } from "react";
 import { CartProvider } from "./_components/contexts/OrderContext";
 import { FoodsProvider } from "./_components/contexts/FoodInfoContext";
-import { TokenProvider } from "./_components/contexts/tokenContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

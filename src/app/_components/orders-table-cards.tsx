@@ -151,7 +151,7 @@ export const DeleteButton = (props: deletebuttonprops) => {
               <Button
                 disabled={wait}
                 onClick={() => {
-                  deleteCategory(categor._id);
+                  deleteCategory(categor.id);
                 }}
               >
                 <Link

@@ -4,8 +4,11 @@ import Footer from "../_components/home-footer";
 import Link from "next/link";
 import CategoryBadge from "../_components/_reusable/category-badge";
 import { Dish } from "../_components/_admin_components/admin-tabs";
-import UserFoodCard from "../_components/_reusable/user-food-card";
+import UserFoodCard, {
+  CustomCategory,
+} from "../_components/_reusable/user-food-card";
 import Section from "../_components/_reusable/section";
+import { FoodCategory } from "@prisma/client";
 type Props = {
   params: Promise<{
     category_id: string;
@@ -19,7 +22,7 @@ export default async function App({ params }: Props) {
       method: "GET",
     }
   );
-  const categories: Dish[] = await response.json();
+  const categories: CustomCategory[] = await response.json();
   return (
     <div>
       <div className="bg-neutral-700 min-h-screen relative">
@@ -33,7 +36,7 @@ export default async function App({ params }: Props) {
         <div className="p-20">
           <div>
             {categories ? (
-              categories.map((category: Dish) => (
+              categories.map((category: CustomCategory) => (
                 <Link href={`/${category.id}`} key={category.id}>
                   <CategoryBadge
                     category={category}

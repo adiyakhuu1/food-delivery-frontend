@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Dish } from "../_admin_components/admin-tabs";
-import UserFoodCard from "./user-food-card";
+import UserFoodCard, { CustomCategory } from "./user-food-card";
 import { FoodCategory } from "@prisma/client";
 type Props = {
-  category: FoodCategory;
+  category: CustomCategory;
 };
 export default function Section({ category }: Props) {
   return (
