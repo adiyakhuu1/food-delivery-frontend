@@ -60,7 +60,6 @@ export default function Tabs(props: Props) {
       { name },
       { withCredentials: true }
     );
-    console.log(res);
     setLoading(false);
     setChanges(!change);
   };

@@ -106,13 +106,7 @@ export async function POST(req: NextRequest) {
         data: {},
       });
     }
-    console.log({
-      foodName,
-      price,
-      ingredients,
-      image,
-      categoryId: catname?.id,
-    });
+
     const newCategory = await prisma.foods.create({
       data: { foodName, price, ingredients, image, categoryId: catname?.id },
     });
@@ -145,7 +139,6 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   const { foodName, price, ingredients, category, image, foodId } =
     await req.json();
-  console.log({ foodName, price, ingredients, category, image, foodId });
   const accessToken = req.cookies.get("accessToken")?.value;
   if (!process.env.ACCESS_TOKEN) {
     return NextResponse_NoEnv("ACCESS_TOKEN");
@@ -210,7 +203,6 @@ export async function PATCH(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   // const id = req.query;
   const url = req.nextUrl.searchParams.get("id");
-  console.log({ url });
   if (!url) {
     return CustomNextResponse(
       false,

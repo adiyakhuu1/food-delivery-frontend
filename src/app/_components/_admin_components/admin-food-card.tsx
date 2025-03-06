@@ -121,7 +121,6 @@ export default function AdminCard({ food, categoryName }: Props) {
         },
         { withCredentials: true }
       );
-      console.log(res.data);
       setResponse(res.data);
       if (res.data.success) {
         setChanges(!change);
@@ -152,7 +151,6 @@ export default function AdminCard({ food, categoryName }: Props) {
       const res = await axios.delete(`/api/food`, {
         params: { id: getFoodId },
       });
-      console.log(res.data);
       setResponse(res.data);
       setAlerts(true);
 
@@ -172,7 +170,6 @@ export default function AdminCard({ food, categoryName }: Props) {
         ...form,
         foodId: getFoodId,
       });
-      console.log(res.data);
       setResponse(res.data);
       setAlerts(true);
       if (res.data.success) {
@@ -243,7 +240,6 @@ export default function AdminCard({ food, categoryName }: Props) {
     }
     setResponse(undefined);
   };
-  console.log(form);
   return (
     <>
       {alerts && respose?.success && (

@@ -117,7 +117,6 @@ export async function POST(req: NextRequest) {
 }
 export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
-  console.log(id);
   const accessToken = req.cookies.get("accessToken")?.value;
   if (!id) {
     return CustomNextResponse(
@@ -140,21 +139,16 @@ export async function DELETE(req: NextRequest) {
     if (verify.role !== "ADMIN") {
       return NextResponse_NotAdmin();
     }
-    console.log("step 1");
     const category = await prisma.foodCategory.findUnique({ where: { id } });
 
     if (category) {
-      console.log("step 2");
-
       const deleteAllFoods = await prisma.foods.deleteMany({
         where: { categoryId: category.id },
       });
-      console.log("step 3");
 
       const deleteCategory = await prisma.foodCategory.delete({
         where: { id: category.id },
       });
-      console.log("step 4");
 
       if (deleteAllFoods && deleteCategory) {
         return CustomNextResponse(
