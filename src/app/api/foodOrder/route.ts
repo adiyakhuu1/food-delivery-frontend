@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
     const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
     };
-
     if (!verify) {
       return NextResponse.json({
         success: false,
@@ -92,9 +91,4 @@ export async function POST(req: NextRequest) {
       data: null,
     });
   }
-  return NextResponse.json({
-    totalPrice,
-    foodOrderItems,
-    status,
-  });
 }

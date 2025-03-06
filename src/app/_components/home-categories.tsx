@@ -13,11 +13,12 @@ import CategoryBadge from "./_reusable/category-badge";
 import axios from "axios";
 import { ImSpinner10 } from "react-icons/im";
 import { FoodCategory } from "@prisma/client";
+import { useCategoriesContext } from "./contexts/categoriesContext";
 
 export default function Categories() {
-  // states
-  const [categories, setCategories] = useState<CustomCategory[]>([]);
-  const [loading, setLoading] = useState(false);
+  // hooks
+  const { AllCategories, loading, setLoading } = useCategoriesContext();
+
   // search params
   const searchParams = useSearchParams();
   const categoryFromParams: string | null = searchParams.get("category");
@@ -34,20 +35,7 @@ export default function Categories() {
       scrollingBade.current.scrollBy({ left: 200, behavior: "smooth" });
     }
   };
-  useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("/api/category");
-        setCategories(res.data.data.categories);
-        setLoading(false);
-      } catch (err) {
-        console.error(err, "aldaa");
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+
   return (
     <div className="w-full justify-items-center">
       <div className="w-[90%] flex flex-col gap-5">
@@ -62,7 +50,7 @@ export default function Categories() {
               ref={scrollingBade}
               className="flex overflow-x-scroll whitespace-nowrap scrollbar-none"
             >
-              {categories.map((category: FoodCategory) => (
+              {AllCategories.map((category: FoodCategory) => (
                 <Link
                   scroll={false}
                   href={`/?category=${category.id}`}
@@ -95,13 +83,13 @@ export default function Categories() {
         ) : (
           <>
             {!categoryFromParams &&
-              categories.map((category) => (
+              AllCategories.map((category) => (
                 <React.Fragment key={category.id}>
                   <Section category={category} />
                 </React.Fragment>
               ))}
             {categoryFromParams &&
-              categories.map((category) => {
+              AllCategories.map((category) => {
                 if (category.id === categoryFromParams) {
                   return (
                     <React.Fragment key={category.id}>

@@ -1,9 +1,8 @@
 "use client";
 
-import { foodOrderItems } from "@/app/_components/contexts/OrderContext";
-// import { user } from "@/app/_components/custom-hooks/user-hooks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FoodOrderItem } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
@@ -14,7 +13,7 @@ import React, { useEffect } from "react";
 export type Order = {
   _id: string;
   // user: user;
-  food: foodOrderItems[];
+  food: FoodOrderItem[];
   date: number;
   totalPrice: number;
   address: string;

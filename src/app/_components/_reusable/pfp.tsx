@@ -17,21 +17,22 @@ export const Pfp = ({ response, loading, logout }: Props) => {
     <div className="flex items-center">
       {!loading ? (
         <>
-          {response?.success &&
-          response.code === "TOKEN_REFRESHED_SUCCESSFULLY" ? (
+          {response?.success && response.data?.userInfo?.email ? (
             <div className=" text-background flex flex-col gap-2">
               <Button
                 onClick={logout}
-                className={`hover:bg-background hover:text-foreground bg-foreground`}
+                className={`hover:bg-secondary w-48 hover:text-foreground inset-2 bg-foreground group transition duration-300 whitespace-nowrap  relative`}
               >
-                <div>{response.data?.userInfo?.email}</div>
+                <span className=" group-hover:hidden">
+                  {response.data?.userInfo?.email}
+                </span>
+                <span className="hidden group-hover:inline">Гарах</span>
               </Button>
             </div>
           ) : (
             <Link href={`/account/signin`}>
               <div className="text-background">
                 <div
-                  onClick={logout}
                   className={`hover:bg-background text-sm hover:text-foreground bg-foreground p-2 rounded-xl flex items-center gap-2`}
                 >
                   <div>Энд дарж нэвтэрнэ үү!</div>
@@ -41,9 +42,11 @@ export const Pfp = ({ response, loading, logout }: Props) => {
           )}
         </>
       ) : (
-        <div className="text-background">
+        <Button
+          disabled={loading}
+          className="text-background transition duration-300"
+        >
           <div
-            onClick={logout}
             className={`hover:bg-background hover:text-foreground bg-foreground p-2 rounded-xl flex items-center gap-2`}
           >
             <div>Түр хүлээнэ үү...</div>
@@ -51,7 +54,7 @@ export const Pfp = ({ response, loading, logout }: Props) => {
               <ImSpinner10 className=" animate-spin" />
             </div>
           </div>
-        </div>
+        </Button>
       )}
     </div>
   );

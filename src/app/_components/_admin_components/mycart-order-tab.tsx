@@ -2,10 +2,9 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { Order } from "@/app/admin/orders/columns";
-import { foodOrderItems } from "../contexts/OrderContext";
 import { userInfo } from "../_reusable/delivery-address-button";
 import Image from "next/image";
-import { FoodOrder, Foods, User } from "@prisma/client";
+import { FoodOrder, FoodOrderItem, Foods, User } from "@prisma/client";
 import { ImSpinner10 } from "react-icons/im";
 import Loading from "../loading";
 
@@ -17,7 +16,7 @@ export type CustomFoodorder = FoodOrder & {
   foodOrderItems: CustomfoodOrderItems[];
   user: User;
 };
-export type CustomfoodOrderItems = foodOrderItems & {
+export type CustomfoodOrderItems = FoodOrderItem & {
   food: Foods;
 };
 export default function OrderTab({ foodOrders, loading }: Props) {

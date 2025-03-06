@@ -31,17 +31,6 @@ export type userInfo = {
 export default function DeliveryAddress() {
   const [address, setAddress] = useState("");
   const [token, setToken] = useState("");
-  // const { token } = useTokenHook();
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const tokeen = await getToken();
-  //     if (tokeen) {
-  //       setToken(tokeen);
-  //     }
-  //   };
-  //   fetch();
-  //   localStorage.setItem("userId", props.userInfo.userExists._id);
-  // }, [props.userInfo.userExists._id]);
 
   return (
     <>

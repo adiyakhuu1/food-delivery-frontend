@@ -18,12 +18,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useContext, useEffect, useState } from "react";
-import {
-  cartContext,
-  foodOrderItems,
-  useCartContext,
-} from "./contexts/OrderContext";
-import { foods, useFoodContext } from "./contexts/FoodInfoContext";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,39 +30,25 @@ import { response } from "../types/types";
 import axios from "axios";
 import { FoodOrder, FoodOrderItem, Foods } from "@prisma/client";
 import { ImSpinner10 } from "react-icons/im";
+import { useCartContext } from "./contexts/CartContext";
+import { useUserContext } from "./contexts/userContext";
+import { useRouter } from "next/navigation";
 export type Order = {
   foodId: string;
   quantity: number;
   food: Foods;
 };
 export default function Navigaion() {
-  const [count, setCount] = useState(1);
+  const { setCartItems, count } = useCartContext();
+  const router = useRouter();
+  const { setResponse, loading, setLoading, response, logout } =
+    useUserContext();
+  const [quantity, setCount] = useState(1);
   const [totalPrice, setTotalPrice] = useState(1);
   const [success, setSucces] = useState(false);
   const [FoodOrderItem, setFoodOrderItem] = useState<Order[]>([]);
   const [orderHistory, setOrderHistory] = useState<CustomFoodorder[]>([]);
-  const [response, setResponse] = useState<response>();
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    setLoading(true);
-    const fetchUserInfo = async () => {
-      try {
-        const res = await axios.get(`/api/user`, { withCredentials: true });
-        setResponse(res.data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err, "Сервэртэй холбогдож чадсангүй!");
-        setResponse({
-          success: false,
-          code: "CONNECTION_ERROR",
-          message: "Сервэртэй холбогдож чадсангүй!",
-          data: null,
-        });
-        setLoading(false);
-      }
-    };
-    fetchUserInfo();
-  }, []);
+
   useEffect(() => {
     const getCart = localStorage.getItem("cart");
     const cart: Order[] = getCart ? JSON.parse(getCart) : [];
@@ -79,17 +59,15 @@ export default function Navigaion() {
       setTotalPrice(price);
     }
     setFoodOrderItem(cart);
-  }, [count]);
-  const logout = async () => {
-    const res = await axios.get(`/api/user/logout`, {
-      withCredentials: true,
-    });
-    setResponse(res.data);
-  };
+  }, [quantity, count]);
+
   const removeFromCart = (id: string) => {
     const cart = FoodOrderItem.filter((food) => id !== food.foodId);
     localStorage.setItem("cart", JSON.stringify(cart));
     setFoodOrderItem(cart);
+    if (response) {
+      setResponse({ ...response, frontend_editing: true });
+    }
   };
   const adjustQuantity = (id: string, operator: boolean = true) => {
     const exist = FoodOrderItem.find((item) => id === item.foodId);
@@ -106,6 +84,9 @@ export default function Navigaion() {
     }
     localStorage.setItem("cart", JSON.stringify(FoodOrderItem));
     setFoodOrderItem(FoodOrderItem);
+    if (response) {
+      setResponse({ ...response, frontend_editing: true });
+    }
   };
   const checkout = async () => {
     setLoading(true);
@@ -116,6 +97,10 @@ export default function Navigaion() {
       { withCredentials: true }
     );
     setResponse(res.data);
+    if (res?.data.code === "ORDER_PLACED_SUCCESSFULLY") {
+      localStorage.removeItem("cart");
+      setCartItems((p) => p + 1);
+    }
     setLoading(false);
   };
   useEffect(() => {
@@ -159,7 +144,18 @@ export default function Navigaion() {
                 setCount((p) => p + 1);
               }}
             >
-              <Cart />
+              {FoodOrderItem.length > 0 ? (
+                <div className="relative">
+                  <Cart />
+                  <div className=" absolute font-extrabold text-rose-400 top-1/4 left-2/3 text-sm stroke-black transform -translate-x-1/2 -translate-y-1/2">
+                    {FoodOrderItem.length}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <Cart />
+                </div>
+              )}
             </SheetTrigger>
             <SheetContent className="bg-neutral-700 w-[535px]">
               <SheetHeader>
@@ -204,6 +200,7 @@ export default function Navigaion() {
                                         {food.food.foodName}
                                       </div>
                                       <button
+                                        disabled={loading}
                                         onClick={() => {
                                           removeFromCart(food.foodId);
                                         }}
@@ -224,6 +221,7 @@ export default function Navigaion() {
                             -
                           </div> */}
                                       <button
+                                        disabled={loading}
                                         className="w-9 h-9"
                                         onClick={() => {
                                           adjustQuantity(food.foodId, false);
@@ -238,6 +236,7 @@ export default function Navigaion() {
                                         </div>
                                       </div>
                                       <button
+                                        disabled={loading}
                                         className="w-9 h-9"
                                         onClick={() => {
                                           adjustQuantity(food.foodId);
@@ -296,17 +295,17 @@ export default function Navigaion() {
                           </SheetClose>
                         </div>
                       </div>
-                      <div className="h-[240px] bg-background rounded-xl relative p-3">
-                        <h1 className="font-bold">Төлбөрийн мэдээлэл</h1>
-                        <div className="flex justify-between p-3">
+                      <div className=" flex flex-col items-center bg-background rounded-xl relative p-3">
+                        <h1 className="font-bold w-full">Төлбөрийн мэдээлэл</h1>
+                        <div className="flex justify-between p-3  w-full">
                           <div>Үнэ</div>
                           <div>${totalPrice}</div>
                         </div>
-                        <div className="flex justify-between p-3">
+                        <div className="flex justify-between p-3  w-full">
                           <div>Хүргэлт</div>
                           <div>$0.99</div>
                         </div>
-                        <div className="flex justify-between p-3 border-t border-dashed border-foreground-50">
+                        <div className=" flex justify-between p-3 border-t border-dashed border-foreground-50  w-full">
                           <div>Нийт дүн</div>
                           <div>${totalPrice + 0.99}</div>
                         </div>
@@ -314,8 +313,8 @@ export default function Navigaion() {
                           onClick={() => {
                             checkout();
                           }}
-                          disabled={loading}
-                          className="bottom-2 absolute border border-red-500 w-10/12 rounded-full justify-center flex right-1/2 left-1/2 transform -translate-x-1/2 cursor-pointer"
+                          disabled={loading || !response?.frontend_editing}
+                          className="border border-red-500 w-10/12 rounded-full justify-center flex "
                         >
                           {loading ? (
                             <div className="flex items-center gap-2">
@@ -328,6 +327,19 @@ export default function Navigaion() {
                             <>Төлөх</>
                           )}
                         </Button>
+
+                        {!response?.frontend_editing &&
+                          response?.code === "ORDER_PLACED_SUCCESSFULLY" && (
+                            <div
+                              className={`${
+                                response?.success
+                                  ? ` text-green-400`
+                                  : ` text-red-400`
+                              }`}
+                            >
+                              {response?.message}
+                            </div>
+                          )}
                       </div>
                     </div>
                   </TabsContent>

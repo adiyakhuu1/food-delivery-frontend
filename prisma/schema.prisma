@@ -19,10 +19,10 @@ model FoodCategory {
 model FoodOrderItem {
   id         String     @id @default(nanoid()) 
   createdAt  DateTime?  @db.Date @default(now())
-  food       Foods      @relation(fields: [foodId], references: [id])
+  food       Foods      @relation(fields: [foodId], references: [id], onDelete: Cascade)
   foodId     String    
   quantity   Int
-  foodOrder  FoodOrder? @relation("OrderToItems", fields: [foodOrderId], references: [id])
+  foodOrder  FoodOrder? @relation("OrderToItems", fields: [foodOrderId], references: [id], onDelete: SetNull)
   foodOrderId String?   
 
   @@map("foodorderitems")
@@ -30,9 +30,10 @@ model FoodOrderItem {
 
 model FoodOrder {
   id             String          @id @default(nanoid()) 
-  user           User            @relation(fields: [userId], references: [id])
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String        
   createdAt      DateTime        @default(now())
+  status String @default("PENDING")
   totalPrice     Int
   foodOrderItems FoodOrderItem[] @relation("OrderToItems")
 
@@ -48,10 +49,10 @@ model Foods {
   ingredients String
   createdAt   DateTime @default(now())
   categoryId  String       
-  category    FoodCategory @relation(fields: [categoryId], references: [id])
-  @@map("foods")
+  category    FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   FoodOrderItem FoodOrderItem[]
+  @@map("foods")
 }
 
 

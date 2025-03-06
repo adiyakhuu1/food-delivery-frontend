@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FoodCategory, Foods } from "@prisma/client";
 import { Order } from "../home-navigations";
+import { useCartContext } from "../contexts/CartContext";
+import { useUserContext } from "../contexts/userContext";
 type Props = {
   category: CustomCategory;
 };
@@ -23,10 +25,13 @@ export type CustomCategory = FoodCategory & {
 };
 export default function UserFoodCard({ category }: Props) {
   // add states
+  const { setCartItems, count } = useCartContext();
+  const { setResponse, loading, setLoading, response, logout } =
+    useUserContext();
   const foods = category.Foods;
   const [alert, setAlert] = useState(false);
   // edit states
-  const [count, setCount] = useState<number>(1);
+  const [quantity, setCount] = useState<number>(1);
 
   useEffect(() => {
     let timeout = setTimeout(() => {
@@ -43,12 +48,16 @@ export default function UserFoodCard({ category }: Props) {
 
     const exist = cart.find((item) => item.foodId === id);
     if (exist) {
-      exist.quantity += count;
+      exist.quantity += quantity;
     } else {
-      cart.push({ foodId: id, quantity: count, food });
+      cart.push({ foodId: id, quantity, food });
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     setCount(1);
+    setCartItems((p) => p + 1);
+    if (response) {
+      setResponse({ ...response, frontend_editing: true });
+    }
   };
   return (
     <>
@@ -113,7 +122,7 @@ export default function UserFoodCard({ category }: Props) {
                       >
                         -
                       </Button>
-                      {count}
+                      {quantity}
                       <Button
                         className="bg-background border border-foreground rounded-full text-foreground hover:text-background"
                         onClick={() => {

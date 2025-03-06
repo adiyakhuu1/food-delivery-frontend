@@ -9,6 +9,7 @@ import axios from "axios";
 import { response } from "@/app/types/types";
 import { useRouter } from "next/navigation";
 import { ImSpinner10 } from "react-icons/im";
+import { useUserContext } from "@/app/_components/contexts/userContext";
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
@@ -20,6 +21,7 @@ export default function Login() {
     email: "",
     password: "",
   });
+  const { setChangeV2, changeV2 } = useUserContext();
   const [response, setResponse] = useState<response>();
   const [loading, setLoading] = useState(false);
   const result = formSchema.safeParse(form);
@@ -43,6 +45,9 @@ export default function Login() {
     try {
       const res = await axios.post(`/api/user/login`, form);
       setResponse(res.data);
+      if (res.data.success) {
+        setChangeV2(!changeV2);
+      }
       setLoading(false);
     } catch (err) {
       console.error(err, "Сервэртэй холбогдож чадсангүй!");

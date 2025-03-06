@@ -25,12 +25,9 @@ export default async function App(props: Props) {
     );
   }
   return (
-    <div className="flex w-full min-h-screen bg-secondary relative">
+    <div className="flex relative w-full">
       <div className="fixed right-10 bottom-10">
         <ModeToggle />
-      </div>
-      <div className="absolute right-10 top-10">
-        <Pfp />
       </div>
       <AdminMainMenu page={page} />
       <div className="flex justify-center mt-20 ml-40">
