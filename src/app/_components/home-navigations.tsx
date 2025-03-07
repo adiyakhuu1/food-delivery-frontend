@@ -6,7 +6,6 @@ import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { Pfp } from "./_reusable/pfp";
 import { Button } from "@/components/ui/button";
-import DeliveryAddress, { userInfo } from "./_reusable/delivery-address-button";
 import Cart from "./_reusable/cart-button";
 import {
   Sheet,
@@ -34,6 +33,8 @@ import { useCartContext } from "./contexts/CartContext";
 import { useUserContext } from "./contexts/userContext";
 import { useRouter } from "next/navigation";
 import { useFoodOrderContext } from "./contexts/foodOrderContext";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { DeliveryAddressContent } from "./_reusable/delivery-dialogcontent";
 export type Order = {
   foodId: string;
   quantity: number;
@@ -48,6 +49,8 @@ export default function Navigaion() {
   const [totalPrice, setTotalPrice] = useState(1);
   const [success, setSucces] = useState(false);
   const [FoodOrderItem, setFoodOrderItem] = useState<Order[]>([]);
+  const [address, setAddress] = useState("");
+
   const [orderHistory, setOrderHistory] = useState<CustomFoodorder[]>([]);
 
   useEffect(() => {
@@ -94,13 +97,14 @@ export default function Navigaion() {
 
     const res = await axios.post(
       `/api/foodOrder`,
-      { totalPrice, foodOrderItems: FoodOrderItem },
+      { totalPrice, foodOrderItems: FoodOrderItem, address },
       { withCredentials: true }
     );
     setResponse(res.data);
     if (res?.data.code === "ORDER_PLACED_SUCCESSFULLY") {
       localStorage.removeItem("cart");
       setCartItems((p) => p + 1);
+      setAddress("");
     }
     setLoading(false);
   };
@@ -137,8 +141,6 @@ export default function Navigaion() {
         )} */}
         {/* <div>Hi adiyakhuu</div> */}
         <div className="flex gap-3">
-          <DeliveryAddress />
-
           <Sheet>
             <SheetTrigger
               onClick={() => {
@@ -310,37 +312,30 @@ export default function Navigaion() {
                           <div>Нийт дүн</div>
                           <div>${totalPrice + 0.99}</div>
                         </div>
-                        <Button
-                          onClick={() => {
-                            checkout();
-                          }}
-                          disabled={loading || !response?.frontend_editing}
-                          className="border border-red-500 w-10/12 rounded-full justify-center flex "
-                        >
-                          {loading ? (
-                            <div className="flex items-center gap-2">
-                              <div>Түр хүлээнэ үү!</div>{" "}
-                              <div>
-                                <ImSpinner10 className=" animate-spin" />
-                              </div>
-                            </div>
-                          ) : (
-                            <>Төлөх</>
-                          )}
-                        </Button>
 
-                        {!response?.frontend_editing &&
-                          response?.code === "ORDER_PLACED_SUCCESSFULLY" && (
-                            <div
-                              className={`${
-                                response?.success
-                                  ? ` text-green-400`
-                                  : ` text-red-400`
-                              }`}
+                        <Dialog>
+                          <DialogTrigger
+                            disabled={FoodOrderItem.length === 0}
+                            onClick={() => {
+                              setResponse(undefined);
+                            }}
+                            asChild
+                          >
+                            <Button
+                              disabled={FoodOrderItem.length === 0}
+                              className="border border-red-500 w-10/12 rounded-full justify-center flex "
                             >
-                              {response?.message}
-                            </div>
-                          )}
+                              <>Төлөх</>
+                            </Button>
+                          </DialogTrigger>
+                          <DeliveryAddressContent
+                            checkout={checkout}
+                            setAddress={setAddress}
+                            address={address}
+                            loading={loading}
+                            response={response}
+                          />
+                        </Dialog>
                       </div>
                     </div>
                   </TabsContent>

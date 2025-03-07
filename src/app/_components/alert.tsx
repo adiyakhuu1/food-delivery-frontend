@@ -12,7 +12,7 @@ export function AlertDestructive({
   return (
     <Alert className="bg-secondary gap-4" variant="destructive">
       <AlertCircle />
-      <AlertTitle>Алдаа!</AlertTitle>
+      <AlertTitle>{message}</AlertTitle>
       <AlertDescription>
         {success ? (
           <div className=" text-green-400 ">{message}</div>

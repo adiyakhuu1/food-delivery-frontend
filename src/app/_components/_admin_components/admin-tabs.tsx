@@ -67,7 +67,7 @@ export default function Tabs(props: Props) {
     return (
       <>
         <div className="min-h-screen border border-border rounded-lg ">
-          <div className="top-1/2 absolute left-[55%] transform -translate-x-1/2 -translate-y-1/2 w-[70%]">
+          <div className="top-1/2 absolute -translate-x-1/2 -translate-y-1/4 left-[55%] transform w-[70%]">
             <div className="h-19 flex bg-background justify-between">
               {/* asdfasdf */}
               <TotalOrders />

@@ -9,9 +9,10 @@ import {
   NextResponse_CatchError,
   NextResponse_NoCookie,
   NextResponse_NoEnv,
+  NextResponse_NotAdmin,
 } from "@/app/_utils/NextResponses";
 export async function POST(req: NextRequest) {
-  const { totalPrice, foodOrderItems, status } = await req.json();
+  const { totalPrice, foodOrderItems, status, address } = await req.json();
   const cookie = req.cookies.get("accessToken");
   const accessToken = cookie?.value;
   if (!process.env.ACCESS_TOKEN) {
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
           create: newItems,
         },
         userId: verify.id,
+        address,
       },
     });
 
@@ -112,8 +114,9 @@ export async function GET(req: NextRequest) {
     const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
 
     const allOrder = await prisma.foodOrder.findMany({
-      include: { user: true },
+      include: { user: true, foodOrderItems: true },
     });
+
     if (allOrder) {
       return CustomNextResponse(
         true,
@@ -130,6 +133,110 @@ export async function GET(req: NextRequest) {
     );
   } catch (err) {
     console.error(err, "Сервэр дээр асуудал гарлаа!");
+    return NextResponse_CatchError(err);
+  }
+}
+export async function PATCH(req: NextRequest) {
+  const { status, id } = await req.json();
+  if (!process.env.ACCESS_TOKEN) {
+    return NextResponse_NoEnv("ACCESS_TOKEN");
+  }
+  const accessToken = req.cookies.get("accessToken")?.value;
+  if (!accessToken) {
+    return NextResponse_NoCookie();
+  }
+  try {
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      role: string;
+    };
+    if (verify.role !== "ADMIN") {
+      return NextResponse_NotAdmin();
+    }
+    const foodOrder = await prisma.foodOrder.findUnique({ where: { id } });
+    if (!foodOrder) {
+      return CustomNextResponse(
+        false,
+        "ORDER_NOT_FOUND",
+        "Захиалга олдсонгүй!",
+        null
+      );
+    }
+    const changeStatus = await prisma.foodOrder.update({
+      where: { id },
+      data: { status },
+    });
+    if (changeStatus) {
+      return CustomNextResponse(
+        true,
+        "STATUS_CHANGED_SUCCESSFULLY",
+        "Статус амжилттай өөрчлөгдлөө!",
+        { data: changeStatus }
+      );
+    }
+    return CustomNextResponse(
+      false,
+      "COULD_NOT_CHANGE_STATUS",
+      "Статус өөрчилж чадсангүй!",
+      null
+    );
+  } catch (err) {
+    console.error(err);
+    return NextResponse_CatchError(err);
+  }
+}
+export async function DELETE(req: NextRequest) {
+  const id = req.nextUrl.searchParams.get("id");
+  if (!id) {
+    return CustomNextResponse(
+      false,
+      "NO_ID_PROVIDED",
+      "Таних тэмдэг илгээгүй",
+      null
+    );
+  }
+  if (!process.env.ACCESS_TOKEN) {
+    return NextResponse_NoEnv();
+  }
+  const accessToken = req.cookies.get("accessToken")?.value;
+  if (!accessToken) {
+    return NextResponse_NoCookie();
+  }
+  try {
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      role: string;
+    };
+
+    if (verify.role !== "ADMIN") {
+      return NextResponse_NotAdmin();
+    }
+
+    const foodOrder = await prisma.foodOrder.findUnique({ where: { id } });
+    if (!foodOrder) {
+      return CustomNextResponse(
+        false,
+        "ORDER_NOT_FOUND",
+        "Захиалга олсонгүй!",
+        null
+      );
+    }
+
+    const deletedOrder = await prisma.foodOrder.delete({ where: { id } });
+    if (deletedOrder) {
+      return CustomNextResponse(
+        true,
+        "ORDER_DELETED_SUCCESSFULLY",
+        "Захиалгыг амжилттай устгалаа!",
+        { deleted: foodOrder }
+      );
+    }
+    return CustomNextResponse(
+      false,
+      "ORDER_DELETION_FAILED",
+      "Захиалгыг устгаж чадсангүй!",
+      null
+    );
+  } catch (err) {
+    console.error(err);
     return NextResponse_CatchError(err);
   }
 }

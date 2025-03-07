@@ -1,11 +1,8 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { Order } from "@/app/admin/orders/columns";
-import { userInfo } from "../_reusable/delivery-address-button";
 import Image from "next/image";
 import { FoodOrder, FoodOrderItem, Foods, User } from "@prisma/client";
-import { ImSpinner10 } from "react-icons/im";
 import Loading from "../loading";
 
 type Props = {
@@ -77,7 +74,7 @@ export default function OrderTab({ foodOrders, loading }: Props) {
                         </div>
                       </div>
                       <div className="flex justify-between text-muted-foreground text-xs">
-                        <div className="truncate">{food.user.address}</div>
+                        <div className="truncate">{food.address}</div>
                       </div>
                     </div>
                   </div>

@@ -196,7 +196,7 @@ export async function PATCH(req: NextRequest) {
       null
     );
   } catch (err) {
-    console.log(err, "Сервэр дээр асуудал гарлаа!");
+    console.error(err, "Сервэр дээр асуудал гарлаа!");
     return NextResponse_CatchError(err);
   }
 }

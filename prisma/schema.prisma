@@ -34,6 +34,7 @@ model FoodOrder {
   createdAt      DateTime        @default(now())
   status String @default("PENDING")
   totalPrice     Int
+  address String
   foodOrderItems FoodOrderItem[] @relation("OrderToItems")
 
   @@index([createdAt], map: "createdAt_1")
@@ -57,7 +58,6 @@ model Foods {
 
 model User {
   id           String       @id @default(nanoid())
-  address      String?
   createdAt    DateTime @default(now())
   email        String @unique
   password     String

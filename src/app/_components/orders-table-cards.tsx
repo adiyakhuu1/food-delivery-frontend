@@ -93,7 +93,6 @@ export const DeleteButton = ({ categor }: { categor: CustomCategory }) => {
       const res = await axios.delete(`/api/category`, {
         params: { id: categor.id },
       });
-      console.log(res.data);
       if (res.data.success) {
         setChanges(!change);
       }
