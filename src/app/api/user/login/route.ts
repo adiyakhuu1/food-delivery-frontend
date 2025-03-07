@@ -26,6 +26,8 @@ export async function POST(req: NextRequest) {
         data: null,
       });
     }
+    await prisma.oTP.deleteMany({ where: { userId: user.id } });
+
     const verifypass = await bcrypt.compare(password, user.password);
     if (!verifypass) {
       return NextResponse.json({
