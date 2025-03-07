@@ -102,8 +102,9 @@ export default function Login() {
           </>
         )}
       </div>
-
-      <div className="text-sm">Нууц үгээ мартсан уу?</div>
+      <Link href={`/account/reset`}>
+        <div className="text-sm text-blue-500">Нууц үгээ мартсан уу?</div>
+      </Link>
 
       <div>
         <div
