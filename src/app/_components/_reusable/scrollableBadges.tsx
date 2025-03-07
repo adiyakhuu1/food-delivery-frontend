@@ -4,10 +4,11 @@ import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { Dish } from "../_admin_components/admin-tabs";
 import Link from "next/link";
 import CategoryBadge from "./category-badge";
+import { FoodCategory } from "@prisma/client";
 
 export default function Badges() {
   const scrollingBade = useRef<HTMLDivElement>(null);
-  const [categories, setCategories] = useState<Dish[]>([]);
+  const [categories, setCategories] = useState<FoodCategory[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
@@ -16,7 +17,7 @@ export default function Badges() {
           method: "GET",
         }
       );
-      const categories: Dish[] = await response.json();
+      const categories = await response.json();
       setCategories(categories);
     };
     fetchData();
@@ -43,9 +44,9 @@ export default function Badges() {
             ref={scrollingBade}
             className="flex overflow-x-scroll whitespace-nowrap scrollbar-none"
           >
-            {categories.map((category: Dish) => (
-              <Link href={`/food?categor=${category._id}`} key={category._id}>
-                <CategoryBadge key={category._id} category={category} />
+            {categories.map((category: FoodCategory) => (
+              <Link href={`/food?categor=${category.id}`} key={category.id}>
+                <CategoryBadge key={category.id} category={category} />
               </Link>
             ))}
           </div>

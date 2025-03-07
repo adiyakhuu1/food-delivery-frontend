@@ -1,12 +1,35 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { jwtDecode } from "jwt-decode";
 
-export default clerkMiddleware();
+export const decodeToken = (token: string) => {
+  try {
+    return jwtDecode(token);
+  } catch (error) {
+    console.error("Invalid token:", error);
+    return null;
+  }
+};
+
+export const isTokenExpired = (token: string) => {
+  const decoded = decodeToken(token);
+  if (!decoded?.exp) return true;
+  return Date.now() >= decoded.exp * 1000;
+};
+
+export function middleware(request: NextRequest) {
+  let cookie = request.cookies.get("refreshToken");
+  const isLoggedIn = cookie?.value || !isTokenExpired(cookie?.value!);
+  if (
+    isLoggedIn &&
+    (request.nextUrl.pathname === "/account/signin" ||
+      request.nextUrl.pathname === "/account/signup")
+  ) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
-  ],
+  matcher: ["/account/signin", "/account/signup", "/account"],
 };

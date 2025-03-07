@@ -3,10 +3,9 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./_components/contexts/theme-provider";
 import { Suspense } from "react";
-import { ClerkProvider } from "@clerk/nextjs";
-import { CartProvider } from "./_components/contexts/OrderContext";
-import { FoodsProvider } from "./_components/contexts/FoodInfoContext";
-import { TokenProvider } from "./_components/contexts/tokenContext";
+import { CartContextProvider } from "./_components/contexts/CartContext";
+import { UserContextProvider } from "./_components/contexts/userContext";
+import { CategoriesContextProvider } from "./_components/contexts/categoriesContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,18 +30,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className}`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className} bg-secondary`}
       >
         <Suspense>
-          <FoodsProvider>
-            <ClerkProvider>
-              <TokenProvider>
-                <CartProvider>
-                  <ThemeProvider>{children}</ThemeProvider>
-                </CartProvider>
-              </TokenProvider>
-            </ClerkProvider>
-          </FoodsProvider>
+          <UserContextProvider>
+            <CategoriesContextProvider>
+              <CartContextProvider>
+                <ThemeProvider>{children}</ThemeProvider>
+              </CartContextProvider>
+            </CategoriesContextProvider>
+          </UserContextProvider>
         </Suspense>
       </body>
     </html>

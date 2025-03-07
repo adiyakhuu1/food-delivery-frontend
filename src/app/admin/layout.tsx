@@ -4,43 +4,41 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "../globals.css";
 // import { <Them} from "./_components/theme-provider";
 import { ThemeProvider } from "../_components/contexts/theme-provider";
-import { Suspense } from "react";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useClerk,
-} from "@clerk/nextjs";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pfp } from "../_components/_reusable/pfp";
+import { response } from "../types/types";
+import axios from "axios";
+import { useUserContext } from "../_components/contexts/userContext";
+import { FoodOrderContextProvider } from "../_components/contexts/foodOrderContext";
 const inter = Montserrat({ subsets: ["latin"] });
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { user } = useClerk();
+  const { response, loading, setLoading, logout } = useUserContext();
   return (
-    <ClerkProvider>
-      <ThemeProvider>
-        {user?.publicMetadata.role === "admin" ? (
-          <Suspense>
-            <div>{children}</div>
-          </Suspense>
-        ) : (
-          <div>
+    <ThemeProvider>
+      {response?.data?.userInfo?.role === "ADMIN" ? (
+        <Suspense>
+          <div className=" relative ">
+            <FoodOrderContextProvider>{children}</FoodOrderContextProvider>
+          </div>
+          <div className=" fixed top-10 right-10">
+            <Pfp response={response} loading={loading} logout={logout} />
+          </div>
+        </Suspense>
+      ) : (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="flex flex-col items-center justify-center">
             <div className="flex flex-col items-center">
-              <div>Not an admin switch or sign in!</div>
-              <SignInButton />
-              <div>
-                <Pfp />
-              </div>
+              {!loading && <div>Админ биш байна!</div>}
+              <Pfp response={response} loading={loading} logout={logout} />
             </div>
           </div>
-        )}
-      </ThemeProvider>
-    </ClerkProvider>
+        </div>
+      )}
+    </ThemeProvider>
   );
 }

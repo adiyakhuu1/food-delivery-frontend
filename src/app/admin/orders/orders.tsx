@@ -1,8 +1,11 @@
 "use client";
-import { useAuth } from "@clerk/nextjs";
-import { createColumn, Order } from "./columns";
+import axios from "axios";
+import { createColumn } from "./columns";
 import { DataTable } from "./data-table";
 import { useEffect, useState } from "react";
+import { useFoodOrderContext } from "@/app/_components/contexts/foodOrderContext";
+import { FoodOrder } from "@prisma/client";
+import { AlertDemo, AlertDestructive } from "@/app/_components/alert";
 
 // async function getData(): Promise<Order[]> {
 //   const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, { method: "GET" });
@@ -13,33 +16,45 @@ import { useEffect, useState } from "react";
 // }
 
 export default function Orders() {
-  const [orders, setData] = useState<Order[]>([]);
-  const [tokeen, setToken] = useState<string>("");
-  const { getToken } = useAuth();
+  const {
+    orders,
+    changeV3,
+    setChangeV3,
+    loading,
+    setLoading,
+    response,
+    setResponse,
+  } = useFoodOrderContext();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
-          method: "GET",
-          headers: {
-            auth: token,
-          },
-        });
-        const data = await res.json();
-        setData(data);
-      }
-    };
-    fetchData();
-  }, []);
-  // const data = await getData();
+  const columns = createColumn(
+    setChangeV3,
+    changeV3,
+    loading,
+    setLoading,
+    setResponse
+  );
 
-  const columns = createColumn(tokeen, setData);
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={orders} token={tokeen} />
+      <div className="fixed top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
+        {response && (
+          <div>
+            {response?.success ? (
+              <AlertDemo
+                success={response.success}
+                message={response.message}
+              />
+            ) : (
+              <AlertDestructive
+                success={response?.success}
+                message={response?.message}
+              />
+            )}
+          </div>
+        )}
+      </div>
+
+      <DataTable columns={columns} data={orders} />
     </div>
   );
 }

@@ -4,18 +4,21 @@ import { Dish, Food } from "./_admin_components/admin-tabs";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
 import { Card } from "@/components/ui/card";
-import UserFoodCard from "./_reusable/user-food-card";
+import UserFoodCard, { CustomCategory } from "./_reusable/user-food-card";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Section from "./_reusable/section";
 import CategoryBadge from "./_reusable/category-badge";
-import { useAuth } from "@clerk/nextjs";
+import axios from "axios";
+import { ImSpinner10 } from "react-icons/im";
+import { FoodCategory } from "@prisma/client";
+import { useCategoriesContext } from "./contexts/categoriesContext";
 
 export default function Categories() {
-  // states
-  const [categories, setCategories] = useState<Dish[]>([]);
-  const [token, setToken] = useState("");
+  // hooks
+  const { AllCategories, loading, setLoading } = useCategoriesContext();
+
   // search params
   const searchParams = useSearchParams();
   const categoryFromParams: string | null = searchParams.get("category");
@@ -33,30 +36,6 @@ export default function Categories() {
     }
   };
 
-  const { getToken } = useAuth();
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
-        {
-          method: "GET",
-        }
-      );
-      const categories: Dish[] = await response.json();
-      setCategories(categories);
-    };
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const dosomething = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-      }
-    };
-    dosomething();
-  }, []);
-
   return (
     <div className="w-full justify-items-center">
       <div className="w-[90%] flex flex-col gap-5">
@@ -71,11 +50,15 @@ export default function Categories() {
               ref={scrollingBade}
               className="flex overflow-x-scroll whitespace-nowrap scrollbar-none"
             >
-              {categories.map((category: Dish) => (
-                <Link href={`/?category=${category._id}`} key={category._id}>
+              {AllCategories.map((category: FoodCategory) => (
+                <Link
+                  scroll={false}
+                  href={`/?category=${category.id}`}
+                  key={category.id}
+                >
                   <div>
                     <CategoryBadge
-                      key={category._id}
+                      key={category.id}
                       category={category}
                       categoryFromParams={categoryFromParams}
                     />
@@ -89,23 +72,34 @@ export default function Categories() {
           </div>
         </div>
       </div>
-      <div className="categories w-[90%] flex flex-wrap gap-10 my-10">
-        {!categoryFromParams &&
-          categories.map((category) => (
-            <React.Fragment key={category._id}>
-              <Section category={category} />
-            </React.Fragment>
-          ))}
-        {categoryFromParams &&
-          categories.map((category) => {
-            if (category._id === categoryFromParams) {
-              return (
-                <React.Fragment key={category._id}>
+      <div className="categories w-[90%] flex flex-wrap gap-10 my-10 justify-center">
+        {loading ? (
+          <div className="text-white flex  items-center gap-2">
+            <div>Түр хүлээнэ үү...</div>
+            <div>
+              <ImSpinner10 className=" animate-spin" />
+            </div>
+          </div>
+        ) : (
+          <>
+            {!categoryFromParams &&
+              AllCategories.map((category) => (
+                <React.Fragment key={category.id}>
                   <Section category={category} />
                 </React.Fragment>
-              );
-            }
-          })}
+              ))}
+            {categoryFromParams &&
+              AllCategories.map((category) => {
+                if (category.id === categoryFromParams) {
+                  return (
+                    <React.Fragment key={category.id}>
+                      <Section category={category} />
+                    </React.Fragment>
+                  );
+                }
+              })}
+          </>
+        )}
       </div>
     </div>
   );

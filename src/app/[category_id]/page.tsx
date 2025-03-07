@@ -4,8 +4,11 @@ import Footer from "../_components/home-footer";
 import Link from "next/link";
 import CategoryBadge from "../_components/_reusable/category-badge";
 import { Dish } from "../_components/_admin_components/admin-tabs";
-import UserFoodCard from "../_components/_reusable/user-food-card";
+import UserFoodCard, {
+  CustomCategory,
+} from "../_components/_reusable/user-food-card";
 import Section from "../_components/_reusable/section";
+import { FoodCategory } from "@prisma/client";
 type Props = {
   params: Promise<{
     category_id: string;
@@ -19,7 +22,7 @@ export default async function App({ params }: Props) {
       method: "GET",
     }
   );
-  const categories: Dish[] = await response.json();
+  const categories: CustomCategory[] = await response.json();
   return (
     <div>
       <div className="bg-neutral-700 min-h-screen relative">
@@ -33,8 +36,8 @@ export default async function App({ params }: Props) {
         <div className="p-20">
           <div>
             {categories ? (
-              categories.map((category: Dish) => (
-                <Link href={`/${category._id}`} key={category._id}>
+              categories.map((category: CustomCategory) => (
+                <Link href={`/${category.id}`} key={category.id}>
                   <CategoryBadge
                     category={category}
                     categoryFromParams={category_id}
@@ -49,8 +52,8 @@ export default async function App({ params }: Props) {
           <div className="categories w-[90%] flex flex-wrap gap-10 my-10">
             {categories ? (
               categories.map((category) => {
-                if (category_id === category._id) {
-                  return <Section key={category._id} category={category} />;
+                if (category_id === category.id) {
+                  return <Section key={category.id} category={category} />;
                 }
               })
             ) : (

@@ -20,9 +20,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CustomCategory } from "./_reusable/user-food-card";
+import axios from "axios";
+import { useCategoriesContext } from "./contexts/categoriesContext";
 
 export const TableCard = () => {
   return (
@@ -64,20 +66,10 @@ export const TableCard = () => {
   );
 };
 
-type deletebuttonprops = {
-  categor: Dish;
-  setNewCategory: Function;
-};
-type category = {
-  name: string;
-  _id: string;
-};
-export const DeleteButton = (props: deletebuttonprops) => {
-  const [token, setToken] = useState("");
-  const [data, setData] = useState<category[]>([]);
-  const { getToken } = useAuth();
+export const DeleteButton = ({ categor }: { categor: CustomCategory }) => {
   const [count, setCount] = useState(3);
   const [wait, setWait] = useState(false);
+  const { setChanges, change } = useCategoriesContext();
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -95,34 +87,18 @@ export const DeleteButton = (props: deletebuttonprops) => {
       clearTimeout(interval);
     };
   }, [wait]);
-  useEffect(() => {
-    localStorage.setItem("allCategories", JSON.stringify(data));
-  }, [data]);
 
-  useEffect(() => {
-    const dosomething = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
+  const deleteCategory = async () => {
+    try {
+      const res = await axios.delete(`/api/category`, {
+        params: { id: categor.id },
+      });
+      if (res.data.success) {
+        setChanges(!change);
       }
-    };
-    dosomething();
-  }, []);
-  const { categor } = props;
-  const path = usePathname();
-  const searchParams = useSearchParams();
-  const deleteCategory = async (id: string) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          auth: token,
-        },
-      }
-    );
-    const dat = await res.json();
-    props.setNewCategory(dat);
+    } catch (err) {
+      console.error(err, "Сервертэй холбогдож чадсангүй!");
+    }
   };
   return (
     <>
@@ -162,20 +138,10 @@ export const DeleteButton = (props: deletebuttonprops) => {
               <Button
                 disabled={wait}
                 onClick={() => {
-                  deleteCategory(categor._id);
+                  deleteCategory();
                 }}
               >
-                <Link
-                  className="bg-none"
-                  onClick={(e) => {
-                    if (wait) {
-                      e.preventDefault();
-                    }
-                  }}
-                  href={path + `?page=food menu`}
-                >
-                  Тийм {wait === true ? `(Wait ${count}s)` : ``}
-                </Link>
+                Тийм {wait === true ? `(Wait ${count}s)` : ``}
               </Button>
             </DialogClose>
             <DialogClose

@@ -8,25 +8,14 @@ type Props = {
   id: string;
   name: string;
   style: string;
+  amount: number;
 };
 export default function AdminCategory(props: Props) {
   const { id } = props;
   const { name } = props;
   const { style } = props;
+  const { amount } = props;
   const [count, setCount] = useState<number>(0);
-  useEffect(() => {
-    const fetchData = async () => {
-      const recCate = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/food/${id}`,
-        {
-          method: "GET",
-        }
-      );
-      const categorizedFoods: Food[] = await recCate.json();
-      setCount(categorizedFoods.length);
-    };
-    fetchData();
-  }, []);
   return (
     <Link href={`/admin?page=food+menu&category=${id}`}>
       <Badge
@@ -36,7 +25,7 @@ export default function AdminCategory(props: Props) {
             : `border border-border rounded-xl`
         }`}
       >
-        {name} ({count})
+        {name} ({amount})
       </Badge>
     </Link>
   );

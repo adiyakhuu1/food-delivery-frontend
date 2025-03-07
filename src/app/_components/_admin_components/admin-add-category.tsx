@@ -10,12 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useTokenContext } from "../contexts/tokenContext";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Loading from "../loading";
 export type newCat = {
   name: string;
   _id: string;
@@ -24,11 +23,10 @@ export type newCat = {
 };
 type Props = {
   handleClick: Function;
-  setName: Function;
+  setName: Dispatch<SetStateAction<string>>;
+  loading: boolean;
 };
 export default function AddCategory(props: Props) {
-  // const { getToken } = useAuth();
-
   return (
     <Dialog>
       <DialogTrigger>
@@ -57,15 +55,13 @@ export default function AddCategory(props: Props) {
         </div>
 
         <DialogFooter>
-          <DialogClose asChild>
-            <Button
-              className="bg-foreground text-background flex p-3 rounded-xl"
-              onClick={() => {
-                props.handleClick();
-              }}
-            >
-              Save Changes
-            </Button>
+          <DialogClose
+            className="bg-foreground text-background flex p-3 rounded-xl"
+            onClick={() => {
+              props.handleClick();
+            }}
+          >
+            {props.loading ? <Loading /> : <>Save Changes</>}
           </DialogClose>
         </DialogFooter>
       </DialogContent>

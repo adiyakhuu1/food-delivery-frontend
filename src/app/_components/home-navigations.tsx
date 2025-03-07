@@ -6,8 +6,6 @@ import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { Pfp } from "./_reusable/pfp";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, useAuth, useClerk } from "@clerk/nextjs";
-import DeliveryAddress, { userInfo } from "./_reusable/delivery-address-button";
 import Cart from "./_reusable/cart-button";
 import {
   Sheet,
@@ -19,137 +17,115 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useContext, useEffect, useState } from "react";
-import {
-  cartContext,
-  foodOrderItems,
-  useCartContext,
-} from "./contexts/OrderContext";
-import { foods, useFoodContext } from "./contexts/FoodInfoContext";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Food } from "./_admin_components/admin-tabs";
-import OrderTab from "./_admin_components/mycart-order-tab";
+import OrderTab, {
+  CustomFoodorder,
+} from "./_admin_components/mycart-order-tab";
 import Link from "next/link";
+import { response } from "../types/types";
+import axios from "axios";
+import { FoodOrder, FoodOrderItem, Foods } from "@prisma/client";
+import { ImSpinner10 } from "react-icons/im";
+import { useCartContext } from "./contexts/CartContext";
+import { useUserContext } from "./contexts/userContext";
+import { useRouter } from "next/navigation";
+import { useFoodOrderContext } from "./contexts/foodOrderContext";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { DeliveryAddressContent } from "./_reusable/delivery-dialogcontent";
+export type Order = {
+  foodId: string;
+  quantity: number;
+  food: Foods;
+};
 export default function Navigaion() {
-  const [count, setCount] = useState(1);
-  const [token, setToken] = useState("");
-  const [response, setResponse] = useState("");
-  const [userInfo, setUserInfo] = useState<userInfo>();
-  const { order, setOrder } = useCartContext();
-  const { foodsInfo, setFoodsInfo } = useFoodContext();
+  const { setCartItems, count } = useCartContext();
+  const router = useRouter();
+  const { setResponse, loading, setLoading, response, logout } =
+    useUserContext();
+  const [quantity, setCount] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(1);
   const [success, setSucces] = useState(false);
-  const [isFailed, setFailed] = useState<boolean>(false);
-  const { getToken } = useAuth();
+  const [FoodOrderItem, setFoodOrderItem] = useState<Order[]>([]);
+  const [address, setAddress] = useState("");
 
-  const changedOrder = order;
+  const [orderHistory, setOrderHistory] = useState<CustomFoodorder[]>([]);
 
-  const calculateTotalPrice = (): { totalPrice: number; price: number } => {
-    const price = foodsInfo.reduce((price, food, index) => {
-      price += food.price * order[index].quantity;
-      return price;
-    }, 0);
-    const totalPrice = price + 0.99;
-    return { totalPrice, price };
-  };
-  const { price } = calculateTotalPrice();
-  const { totalPrice } = calculateTotalPrice();
-  const { user } = useClerk();
   useEffect(() => {
-    let interval = setTimeout(() => {
-      setSucces(false);
-    }, 2000);
-    return () => {
-      clearTimeout(interval);
-    };
-  }, [success]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/account/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: user?.emailAddresses[0].emailAddress,
-            password: user?.id,
-          }),
-        }
-      );
-      const data = await res.json();
-      setUserInfo(data);
-    };
-    fetchData();
-  }, [user]);
-  // const [form, setForm] = useState({
-  useEffect(() => {
-    setFailed(false);
-  }, [order]);
-  useEffect(() => {
-    const dosomething = async () => {
-      const token = await getToken();
-      if (token) {
-        setToken(token);
-      }
-    };
-    dosomething();
-  }, []);
-  // useEffect(() => {
-  //   const fetchdata = async () => {
-  //     const fetchd = await fetch(
-  //       `${process.env.NEXT_PUBLIC_DB_URL}/account/67933be24b8118f8d9c34b34`,
-  //       { method: "GET" }
-  //     );
-  //     const data = await fetchd.json();
-  //     setUser(data);
-  //   };
-  //   fetchdata();
-  // }, []);
-  // });
-  const form = {
-    user: userInfo?.userExists._id,
-    totalPrice: totalPrice,
-    foodOrderItems: order,
-  };
+    const getCart = localStorage.getItem("cart");
+    const cart: Order[] = getCart ? JSON.parse(getCart) : [];
+    if (cart.length > 0) {
+      const price = cart.reduce((prev, acc) => {
+        return (prev += acc.food.price * acc.quantity);
+      }, 0);
+      setTotalPrice(price);
+    }
+    setFoodOrderItem(cart);
+  }, [quantity, count]);
 
-  const addOrder = async () => {
-    if (user) {
-      const senddata = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            auth: token,
-          },
-          body: JSON.stringify(form),
-        }
-      );
-      const response = await senddata.json();
-      setResponse(response.message);
-      if (response.message === "success") {
-        setOrder([]);
-        setFoodsInfo([]);
-      }
-    } else {
-      alert("Please login!");
+  const removeFromCart = (id: string) => {
+    const cart = FoodOrderItem.filter((food) => id !== food.foodId);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    setFoodOrderItem(cart);
+    if (response) {
+      setResponse({ ...response, frontend_editing: true });
     }
   };
-  const onDelete = (id: string) => {
-    const findfood: foods[] = foodsInfo.filter((food) => food._id !== id);
-    const findOrder: foodOrderItems[] = order.filter((ord) => ord.food !== id);
-    setFoodsInfo(findfood);
-    setOrder(findOrder);
+  const adjustQuantity = (id: string, operator: boolean = true) => {
+    const exist = FoodOrderItem.find((item) => id === item.foodId);
+    if (!exist) return;
+    if (operator) {
+      exist.quantity += 1;
+    } else {
+      if (exist.quantity === 1) {
+        removeFromCart(id);
+        return;
+      } else {
+        exist.quantity -= 1;
+      }
+    }
+    localStorage.setItem("cart", JSON.stringify(FoodOrderItem));
+    setFoodOrderItem(FoodOrderItem);
+    if (response) {
+      setResponse({ ...response, frontend_editing: true });
+    }
   };
+  const checkout = async () => {
+    setLoading(true);
+
+    const res = await axios.post(
+      `/api/foodOrder`,
+      { totalPrice, foodOrderItems: FoodOrderItem, address },
+      { withCredentials: true }
+    );
+    setResponse(res.data);
+    if (res?.data.code === "ORDER_PLACED_SUCCESSFULLY") {
+      localStorage.removeItem("cart");
+      setCartItems((p) => p + 1);
+      setAddress("");
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    if (response?.success) {
+      localStorage.setItem(
+        "allOrders",
+        JSON.stringify(response?.data?.userInfo?.orderedFoods)
+      );
+    }
+    if (response?.data?.userInfo?.orderedFoods) {
+      setOrderHistory(response?.data?.userInfo?.orderedFoods);
+    }
+  }, [response]);
   return (
     <div className="bg-primary h-17 w-full justify-items-center">
       <div className="flex items-center justify-between w-[90%]">
         <div>
           <Logo style="text-background" />
         </div>
-        {user && (
+        {/* {user && (
           <div className="text-background">
             <div>Сайн байна уу! {user.fullName}</div>
 
@@ -162,14 +138,27 @@ export default function Navigaion() {
               </Link>
             )}
           </div>
-        )}
+        )} */}
         {/* <div>Hi adiyakhuu</div> */}
         <div className="flex gap-3">
-          {userInfo && <DeliveryAddress userInfo={userInfo} token={token} />}
-
           <Sheet>
-            <SheetTrigger>
-              <Cart />
+            <SheetTrigger
+              onClick={() => {
+                setCount((p) => p + 1);
+              }}
+            >
+              {FoodOrderItem.length > 0 ? (
+                <div className="relative">
+                  <Cart />
+                  <div className=" absolute font-extrabold text-rose-400 top-1/4 left-2/3 text-sm stroke-black transform -translate-x-1/2 -translate-y-1/2">
+                    {FoodOrderItem.length}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <Cart />
+                </div>
+              )}
             </SheetTrigger>
             <SheetContent className="bg-neutral-700 w-[535px]">
               <SheetHeader>
@@ -188,19 +177,19 @@ export default function Navigaion() {
                       <div className="bg-background h-[440px] w-[336px] border rounded-2xl p-2 overflow-scroll scrollbar-none">
                         <div className=" relative">
                           <div>
-                            {foodsInfo.map((food, index) => (
+                            {FoodOrderItem.map((food, index) => (
                               <div
-                                key={food._id}
+                                key={food.food.id}
                                 className={`h-40 w-full flex gap-2 items-center bg-secondary rounded-lg`}
                               >
                                 <div className="w-[129px] h-[129px] content-center">
                                   <Image
                                     className="w-[350px] h-[125px] bg-cover bg-center rounded-xl"
-                                    src={
-                                      food.image
-                                        ? food.image
+                                    src={`${
+                                      food.food.image
+                                        ? food.food.image
                                         : `https://www.foodandwine.com/thmb/bT5-sIRTEMDImFAqBmEAzG5T5A4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg`
-                                    }
+                                    }`}
                                     priority={false}
                                     width={1500}
                                     height={1000}
@@ -211,20 +200,20 @@ export default function Navigaion() {
                                   <div>
                                     <div className="flex justify-between text-red-500 pr-2 ">
                                       <div className="text-red-500 font-bold">
-                                        {food.foodName}
+                                        {food.food.foodName}
                                       </div>
                                       <button
+                                        disabled={loading}
                                         onClick={() => {
-                                          onDelete(food._id);
+                                          removeFromCart(food.foodId);
                                         }}
                                         className=" w-4 h-4"
                                       >
                                         X
                                       </button>
                                     </div>
-
                                     <div className="h-12 truncate text-wrap text-xs text-foreground">
-                                      {food.ingredients}
+                                      {food.food.ingredients}
                                     </div>
                                   </div>
                                   <div className="flex justify-between font-bold text-foreground">
@@ -235,24 +224,26 @@ export default function Navigaion() {
                             -
                           </div> */}
                                       <button
+                                        disabled={loading}
                                         className="w-9 h-9"
                                         onClick={() => {
-                                          changedOrder[index].quantity -= 1;
-                                          setCount(count + 1);
+                                          adjustQuantity(food.foodId, false);
+                                          setCount(food.quantity - 1);
                                         }}
                                       >
                                         -
                                       </button>
                                       <div className="w-9 h-9 content-center justify-items-center">
                                         <div>
-                                          {changedOrder[index].quantity}
+                                          {FoodOrderItem[index].quantity}
                                         </div>
                                       </div>
                                       <button
+                                        disabled={loading}
                                         className="w-9 h-9"
                                         onClick={() => {
-                                          changedOrder[index].quantity += 1;
-                                          setCount(count + 1);
+                                          adjustQuantity(food.foodId);
+                                          setCount(food.quantity + 1);
                                         }}
                                       >
                                         +
@@ -264,13 +255,13 @@ export default function Navigaion() {
                           </div> */}
                                     </div>
                                     <div className="w-9 h-9 content-center justify-items-center">
-                                      ${food.price}
+                                      ${food.food.price}
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             ))}
-                            {foodsInfo.length <= 0 && (
+                            {FoodOrderItem.length <= 0 && (
                               <div className="w-[320px] h-44 bg-secondary rounded-xl px-3 py-2 flex flex-col items-center gap-4 justify-center">
                                 {success ? (
                                   <div>Захиалга амжилттай</div>
@@ -307,43 +298,44 @@ export default function Navigaion() {
                           </SheetClose>
                         </div>
                       </div>
-                      <div className="h-[240px] bg-background rounded-xl relative p-3">
-                        <h1 className="font-bold">Төлбөрийн мэдээлэл</h1>
-                        <div className="flex justify-between p-3">
+                      <div className=" flex flex-col items-center bg-background rounded-xl relative p-3">
+                        <h1 className="font-bold w-full">Төлбөрийн мэдээлэл</h1>
+                        <div className="flex justify-between p-3  w-full">
                           <div>Үнэ</div>
-                          <div>${price}</div>
+                          <div>${totalPrice}</div>
                         </div>
-                        <div className="flex justify-between p-3">
+                        <div className="flex justify-between p-3  w-full">
                           <div>Хүргэлт</div>
                           <div>$0.99</div>
                         </div>
-                        <div className="flex justify-between p-3 border-t border-dashed border-foreground-50">
+                        <div className=" flex justify-between p-3 border-t border-dashed border-foreground-50  w-full">
                           <div>Нийт дүн</div>
-                          <div>${totalPrice}</div>
+                          <div>${totalPrice + 0.99}</div>
                         </div>
-                        <div
-                          onClick={() => {
-                            if (order.length < 0) {
-                              return;
-                            } else {
-                              addOrder();
-                              setFailed(true);
-                              setSucces(true);
-                            }
-                          }}
-                          className="bottom-2 absolute border border-red-500 w-10/12 rounded-full justify-center flex right-1/2 left-1/2 transform -translate-x-1/2 cursor-pointer"
-                        >
-                          Төлөх
-                          {isFailed && (
-                            <div>
-                              {response !== "success" ? (
-                                <div> - (Please Wait!)</div>
-                              ) : (
-                                <div> - (Done)</div>
-                              )}
-                            </div>
-                          )}
-                        </div>
+
+                        <Dialog>
+                          <DialogTrigger
+                            disabled={FoodOrderItem.length === 0}
+                            onClick={() => {
+                              setResponse(undefined);
+                            }}
+                            asChild
+                          >
+                            <Button
+                              disabled={FoodOrderItem.length === 0}
+                              className="border border-red-500 w-10/12 rounded-full justify-center flex "
+                            >
+                              <>Төлөх</>
+                            </Button>
+                          </DialogTrigger>
+                          <DeliveryAddressContent
+                            checkout={checkout}
+                            setAddress={setAddress}
+                            address={address}
+                            loading={loading}
+                            response={response}
+                          />
+                        </Dialog>
                       </div>
                     </div>
                   </TabsContent>
@@ -353,14 +345,14 @@ export default function Navigaion() {
                         Захиалгын түүхүүд
                       </div>
 
-                      {userInfo && <OrderTab userInfo={userInfo} />}
+                      <OrderTab foodOrders={orderHistory} loading={loading} />
                     </div>
                   </TabsContent>
                 </Tabs>
               </SheetHeader>
             </SheetContent>
           </Sheet>
-          <Pfp />
+          <Pfp response={response} logout={logout} loading={loading} />
         </div>
       </div>
     </div>

@@ -1,7 +1,5 @@
 "use client";
-
 import Image from "next/image";
-import { Dish, Food } from "../_admin_components/admin-tabs";
 import {
   Dialog,
   DialogClose,
@@ -14,96 +12,53 @@ import {
 import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { Pfp } from "./pfp";
-import { useCartContext } from "@/app/_components/contexts/OrderContext";
-import { useFoodContext } from "@/app/_components/contexts/FoodInfoContext";
 import { Alert } from "@/components/ui/alert";
+import { FoodCategory, Foods } from "@prisma/client";
+import { Order } from "../home-navigations";
+import { useCartContext } from "../contexts/CartContext";
+import { useUserContext } from "../contexts/userContext";
 type Props = {
-  categoryId: string;
-  categoryName: string;
+  category: CustomCategory;
 };
-type Order = {
-  food: string;
-  quantity: number;
+export type CustomCategory = FoodCategory & {
+  Foods: Foods[];
 };
-
-export default function UserFoodCard({ categoryId, categoryName }: Props) {
-  const { order, setOrder } = useCartContext();
-  const [orderResponse, setOrderRespone] = useState();
-  const { foodsInfo, setFoodsInfo } = useFoodContext();
-
+export default function UserFoodCard({ category }: Props) {
   // add states
-  const [foods, setFoods] = useState<Food[]>([]);
-  const [foodName, setFoodName] = useState<string>("");
-  const [ingredients, setIngre] = useState<string>("");
-  const [image, setImage] = useState<string>("");
-  const [chooseCate, setCategory] = useState<string>("");
-  const [categories, setAllCategory] = useState<Dish[]>([]);
-  const [selected, selectedFood] = useState({});
+  const { setCartItems, count } = useCartContext();
+  const { setResponse, loading, setLoading, response, logout } =
+    useUserContext();
+  const foods = category.Foods;
   const [alert, setAlert] = useState(false);
-
-  const [price, setPrice] = useState<number>(1);
   // edit states
-  const [getFoodId, setFoodId] = useState<string>("");
-  const [changeCategory, setEditCategory] = useState("");
-  const [count, setCount] = useState<number>(1);
-  // const [order, setOrder] = useState<Order[]>([]);
-  const [ref, refresh] = useState(0);
+  const [quantity, setCount] = useState<number>(1);
 
   useEffect(() => {
-    let interval = setTimeout(() => {
+    let timeout = setTimeout(() => {
       setAlert(false);
     }, 5000);
 
     return () => {
-      clearTimeout(interval);
+      clearTimeout(timeout);
     };
   }, [alert]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const recCate = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/food/${categoryId}`,
-        {
-          method: "GET",
-        }
-      );
-      const categorizedFoods: Food[] = await recCate.json();
-      setFoods(categorizedFoods);
-    };
-    fetchData();
-  }, [ref]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const recCate = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/foodCategory`,
-        {
-          method: "GET",
-        }
-      );
-      const categories: Dish[] = await recCate.json();
-      setAllCategory(categories);
-    };
-    fetchData();
-  }, [ref]);
+  const addToCart = (id: string, food: Foods) => {
+    const getCart = localStorage.getItem("cart");
+    const cart: Order[] = getCart ? JSON.parse(getCart) : [];
 
-  const handleClick = async () => {
-    const recCate = await fetch(
-      `${process.env.NEXT_PUBLIC_DB_URL}/foodOrderItem`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ food: getFoodId, quantity: count }),
-      }
-    );
-    const orderr = await recCate.json();
-    setOrderRespone(orderr);
+    const exist = cart.find((item) => item.foodId === id);
+    if (exist) {
+      exist.quantity += quantity;
+    } else {
+      cart.push({ foodId: id, quantity, food });
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    setCount(1);
+    setCartItems((p) => p + 1);
+    if (response) {
+      setResponse({ ...response, frontend_editing: true });
+    }
   };
-
-  localStorage.setItem("order", JSON.stringify(order));
-  localStorage.setItem("foodsInfo", JSON.stringify(foodsInfo));
   return (
     <>
       {alert && (
@@ -113,24 +68,12 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
       )}
       {foods.map((food) => (
         <div
-          key={food._id}
+          key={food.id}
           className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl"
         >
           {/* edit dialog here */}
           <Dialog>
-            <DialogTrigger
-              onClick={() => {
-                setFoodId(food._id);
-                setEditCategory(food.category);
-                setFoodName(food.foodName);
-                setIngre(food.ingredients);
-                setPrice(food.price);
-                setImage(food.image);
-                setCount(1);
-                // selectedFood(food);
-              }}
-              className=""
-            >
+            <DialogTrigger>
               <div>
                 <GoPlus className="absolute top-[40%] bg-background right-4 text-red-500 text-xs w-10 h-10 rounded-full shadow-lg" />
               </div>
@@ -174,70 +117,34 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         }`}
                         onClick={() => {
                           setCount((p) => p - 1);
+                          // addToCart(food.id, food, false);
                         }}
                       >
                         -
                       </Button>
-                      {count}
+                      {quantity}
                       <Button
                         className="bg-background border border-foreground rounded-full text-foreground hover:text-background"
                         onClick={() => {
                           setCount((p) => p + 1);
+
+                          // addToCart(food.id, food);
                         }}
                       >
                         +
                       </Button>
                     </div>
                   </div>
-                  <SignedIn>
-                    <DialogClose asChild>
-                      <Button
-                        onClick={() => {
-                          const exist = order.find((item) => {
-                            if (item.food === food._id) {
-                              setAlert(true);
-                              return item;
-                            } else {
-                            }
-                          });
-
-                          if (!exist) {
-                            setOrder([
-                              ...order,
-                              {
-                                food: food._id,
-                                foodName: food.foodName,
-                                quantity: count,
-                              },
-                            ]);
-                            setFoodsInfo([
-                              ...foodsInfo,
-                              {
-                                _id: getFoodId,
-                                foodName: foodName,
-                                price: price,
-                                ingredients: ingredients,
-                                image: image,
-                              },
-                            ]);
-                          }
-                        }}
-                        className="w-full rounded-lg bg-primary"
-                      >
-                        Сагсанд нэмэх
-                      </Button>
-                    </DialogClose>
-                  </SignedIn>
-                  <SignedOut>
-                    <div className="flex items-center gap-4 justify-center">
-                      <SignInButton>
-                        <div>
-                          <Pfp />
-                          <div>Нэвтэрнэ үү!</div>
-                        </div>
-                      </SignInButton>
-                    </div>
-                  </SignedOut>
+                  <DialogClose asChild>
+                    <Button
+                      onClick={() => {
+                        addToCart(food.id, food);
+                      }}
+                      className="w-full rounded-lg bg-primary"
+                    >
+                      Сагсанд нэмэх
+                    </Button>
+                  </DialogClose>
                 </div>
               </div>
             </DialogContent>
