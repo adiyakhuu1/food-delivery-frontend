@@ -1,7 +1,9 @@
 "use client";
+import axios from "axios";
 import { createColumn, Order } from "./columns";
 import { DataTable } from "./data-table";
 import { useEffect, useState } from "react";
+import { useFoodOrderContext } from "@/app/_components/contexts/foodOrderContext";
 
 // async function getData(): Promise<Order[]> {
 //   const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, { method: "GET" });
@@ -12,27 +14,9 @@ import { useEffect, useState } from "react";
 // }
 
 export default function Orders() {
-  const [orders, setData] = useState<Order[]>([]);
+  const { orders } = useFoodOrderContext();
+  const [data, setData] = useState<Order[]>([]);
   const [tokeen, setToken] = useState<string>("");
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const token = await getToken();
-  //     if (token) {
-  //       setToken(token);
-  //       const res = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
-  //         method: "GET",
-  //         headers: {
-  //           auth: token,
-  //         },
-  //       });
-  //       const data = await res.json();
-  //       setData(data);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-  // const data = await getData();
 
   const columns = createColumn(tokeen, setData);
   return (

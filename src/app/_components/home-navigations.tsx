@@ -33,6 +33,7 @@ import { ImSpinner10 } from "react-icons/im";
 import { useCartContext } from "./contexts/CartContext";
 import { useUserContext } from "./contexts/userContext";
 import { useRouter } from "next/navigation";
+import { useFoodOrderContext } from "./contexts/foodOrderContext";
 export type Order = {
   foodId: string;
   quantity: number;

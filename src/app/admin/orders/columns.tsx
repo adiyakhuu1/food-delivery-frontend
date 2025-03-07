@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FoodOrderItem } from "@prisma/client";
+import { FoodOrder, FoodOrderItem } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
@@ -24,7 +24,7 @@ export type Order = {
 export const createColumn = (
   token: string,
   setData: React.Dispatch<React.SetStateAction<Order[]>>
-): ColumnDef<Order>[] => [
+): ColumnDef<FoodOrder>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -83,7 +83,7 @@ export const createColumn = (
           // const { getToken } = useAuth();
           // const token = await getToken();
           const send = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original.id}`,
             {
               method: "PUT",
               headers: { auth: token, "Content-Type": "application/json" },
@@ -115,14 +115,14 @@ export const createColumn = (
           // const { getToken } = useAuth();
           // const token = await getToken();
           const send = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original._id}`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/foodOrder/${event.cell.row.original.id}`,
             {
               method: "DELETE",
               headers: { auth: token, "Content-Type": "application/json" },
             }
           );
           setData((pre) =>
-            pre.filter((one) => one._id !== event.cell.row.original._id)
+            pre.filter((one) => one._id !== event.cell.row.original.id)
           );
         }}
       >
@@ -143,7 +143,7 @@ export const createColumn = (
           console.log(event.table.getSelectedRowModel().rows);
           const selected = event.table
             .getSelectedRowModel()
-            .rows.map((one) => one.original._id);
+            .rows.map((one) => one.original.id);
 
           fetch(`${process.env.NEXT_PUBLIC_DB_URL}/foodOrder`, {
             method: "DELETE",

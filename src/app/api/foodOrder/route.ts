@@ -4,6 +4,12 @@ import { prisma } from "@/lib/prismadb";
 import { FoodOrderItem } from "@prisma/client";
 import { CustomCategory } from "@/app/_components/_reusable/user-food-card";
 import { Order } from "@/app/_components/home-navigations";
+import {
+  CustomNextResponse,
+  NextResponse_CatchError,
+  NextResponse_NoCookie,
+  NextResponse_NoEnv,
+} from "@/app/_utils/NextResponses";
 export async function POST(req: NextRequest) {
   const { totalPrice, foodOrderItems, status } = await req.json();
   const cookie = req.cookies.get("accessToken");
@@ -90,5 +96,40 @@ export async function POST(req: NextRequest) {
       code: "ERROR_IN_THE_SERVER",
       data: null,
     });
+  }
+}
+export async function GET(req: NextRequest) {
+  if (!process.env.ACCESS_TOKEN) {
+    return NextResponse_NoEnv("ACCESS_TOKEN");
+  }
+
+  const accessToken = req.cookies.get("accessToken")?.value;
+  if (!accessToken) {
+    return NextResponse_NoCookie();
+  }
+
+  try {
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
+
+    const allOrder = await prisma.foodOrder.findMany({
+      include: { user: true },
+    });
+    if (allOrder) {
+      return CustomNextResponse(
+        true,
+        "REQUEST_SUCCESS",
+        "Хоолыг амжиллаа татлаа!",
+        { allOrder }
+      );
+    }
+    return CustomNextResponse(
+      false,
+      "NO_FOODORDERS_FOUND",
+      "Хоолны захиалга байхгүй байна!",
+      null
+    );
+  } catch (err) {
+    console.error(err, "Сервэр дээр асуудал гарлаа!");
+    return NextResponse_CatchError(err);
   }
 }

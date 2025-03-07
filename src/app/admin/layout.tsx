@@ -10,6 +10,7 @@ import { Pfp } from "../_components/_reusable/pfp";
 import { response } from "../types/types";
 import axios from "axios";
 import { useUserContext } from "../_components/contexts/userContext";
+import { FoodOrderContextProvider } from "../_components/contexts/foodOrderContext";
 const inter = Montserrat({ subsets: ["latin"] });
 export default function RootLayout({
   children,
@@ -21,7 +22,9 @@ export default function RootLayout({
     <ThemeProvider>
       {response?.data?.userInfo?.role === "ADMIN" ? (
         <Suspense>
-          <div className=" relative ">{children}</div>
+          <div className=" relative ">
+            <FoodOrderContextProvider>{children}</FoodOrderContextProvider>
+          </div>
           <div className=" fixed top-10 right-10">
             <Pfp response={response} loading={loading} logout={logout} />
           </div>
