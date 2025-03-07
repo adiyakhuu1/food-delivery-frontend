@@ -97,7 +97,6 @@ export const createColumn = (
 
             setResponse(res.data);
             setLoading(false);
-            console.log(res.data);
           }}
         >
           <option value={`PENDING`}>PENDING</option>
@@ -119,7 +118,6 @@ export const createColumn = (
           const res = await axios.delete(`/api/foodOrder`, {
             params: { id: event.cell.row.original.id },
           });
-          console.log(res.data);
 
           setChangeV3(!changeV3);
 
