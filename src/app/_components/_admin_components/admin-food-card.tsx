@@ -265,6 +265,7 @@ export default function AdminCard({ food, categoryName }: Props) {
               category: "",
               image: "",
             });
+            setResponse(undefined)
           }}
           name="category"
           className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
@@ -349,6 +350,7 @@ export default function AdminCard({ food, categoryName }: Props) {
               )}
             </div>
           </div>
+          <div>
           <DialogFooter className="flex flex-col gap-3 items-center justify-center">
             {respose?.success ? (
               <div className=" text-green-400">{respose?.message}</div>
@@ -364,14 +366,22 @@ export default function AdminCard({ food, categoryName }: Props) {
               className={`bg-foreground px-5 p-2 text-secondary rounded-lg flex items-center gap-2`}
               asChild
             >
-              {loading && (
+              {loading ? (
                 <div>
                   <ImSpinner10 className=" animate-spin" />
+                  <div>Хадгалах</div>
+
+                </div>
+              ): (
+                <div>
+
+                  <div>Хадгалах</div>
                 </div>
               )}
-              <div>Хадгалах</div>
             </DialogClose>
           </DialogFooter>
+
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -393,6 +403,7 @@ export default function AdminCard({ food, categoryName }: Props) {
                   image: food.image,
                 });
                 setFoodId(food.id);
+                setResponse(undefined)
               }}
               className=""
             >
