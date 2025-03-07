@@ -25,12 +25,11 @@ export default async function App(props: Props) {
     );
   }
   return (
-    <div className="flex relative w-full">
+    <div className="">
       <div className="fixed right-10 bottom-10">
         <ModeToggle />
       </div>
-      <AdminMainMenu page={page} />
-      <div className="flex justify-center mt-20 ml-40">
+      <div className=" p-16">
         {page === `food menu` && <Tabs page={page} category={category} />}
         {page === `orders` && <Tabs page={page} category={category} />}
         {page === `settings` && <Tabs page={page} category={category} />}

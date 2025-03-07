@@ -6,11 +6,11 @@ import { MdOutlineDashboard } from "react-icons/md";
 import Logo from "../logo";
 import { Button } from "@/components/ui/button";
 type Props = {
-  page: string;
+  page: string | null;
 };
 export default function AdminMainMenu(props: Props) {
   const { page } = props;
-  const normalStyle = `py-2 px-8 bg-background text-primary rounded-full flex gap-2 items-center hover:text-background`;
+  const normalStyle = `w-full py-2 px-8 bg-background text-primary rounded-full flex gap-2 items-center hover:text-background`;
   const selectedStyle = `w-full py-2 px-8 bg-primary text-primary-foreground rounded-full flex gap-2 items-center`;
   const settingsStyle = normalStyle;
   const settingsStyleSelected = selectedStyle;
@@ -18,8 +18,9 @@ export default function AdminMainMenu(props: Props) {
   const orderStyleSelected = selectedStyle;
   const foodMenuStyle = normalStyle;
   const foodMenuStyleSelected = selectedStyle;
+
   return (
-    <div className="w-[255px] min-h-screen bg-background p-5 fixed left-0 top-0">
+    <div className="min-h-screen bg-background p-5">
       {/* logo here */}
       <Logo style="text-foreground" />
       {/* logo ending here */}

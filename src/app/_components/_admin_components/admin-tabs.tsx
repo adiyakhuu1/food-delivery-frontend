@@ -63,29 +63,24 @@ export default function Tabs(props: Props) {
     setLoading(false);
     setChanges(!change);
   };
+  console.log(props.page);
   if (page === `orders`) {
     return (
-      <>
-        <div className="min-h-screen border border-border rounded-lg ">
-          <div className="top-1/2 absolute -translate-x-1/2 -translate-y-1/4 left-[55%] transform w-[70%]">
-            <div className="h-19 flex bg-background justify-between">
-              {/* asdfasdf */}
-              <TotalOrders />
-              <div className="w-1/2">
-                <div className="flex gap-4 p-3 justify-end rounded-full"></div>
-              </div>
-            </div>
-
-            <Orders />
-          </div>
+      <div className=" flex flex-col p-10">
+        <div className="">
+          {/* asdfasdf */}
+          <TotalOrders />
         </div>
-      </>
+        <div className="container">
+          <Orders />
+        </div>
+      </div>
     );
   } else if (page === `food menu`) {
     return (
-      <div className="flex flex-col gap-10 w-[70%] right-40 absolute">
+      <div className="flex flex-col gap-10 p-10">
         <div className="w-full ">
-          <div className="w-full h-auto py-10 bg-background">
+          <div className=" py-10 bg-background">
             <div className="text-xl p-5 font-bold">Хоолны категорууд</div>
             <div className="flex gap-3 flex-wrap px-5">
               <Link href={`/admin?page=food+menu`}>
@@ -123,14 +118,6 @@ export default function Tabs(props: Props) {
             </div>
           </div>
         </div>
-
-        {/* {AllCategories.map((cate: CustomCategory) => {
-          
-          if (cate.id !== categoryFromProps) {
-            return <div>Category ustgasan esvel ogt baigaagui!</div>;
-          }
-        })} */}
-
         <Suspense>
           {categoryFromProps
             ? AllCategories.map((categor: CustomCategory, index: number) => {

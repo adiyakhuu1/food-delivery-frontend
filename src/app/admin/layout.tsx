@@ -11,20 +11,32 @@ import { response } from "../types/types";
 import axios from "axios";
 import { useUserContext } from "../_components/contexts/userContext";
 import { FoodOrderContextProvider } from "../_components/contexts/foodOrderContext";
+import AdminMainMenu from "../_components/_admin_components/admin-main_menu";
+import { useSearchParams } from "next/navigation";
 const inter = Montserrat({ subsets: ["latin"] });
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const searchParams = useSearchParams();
   const { response, loading, setLoading, logout } = useUserContext();
+  const page = searchParams.get("page");
   return (
     <ThemeProvider>
       {response?.data?.userInfo?.role === "ADMIN" ? (
         <Suspense>
-          <div className=" relative ">
-            <FoodOrderContextProvider>{children}</FoodOrderContextProvider>
+          <div className="w-[15%] top-0 left-0 bottom-0 fixed">
+            <div className="">
+              <AdminMainMenu page={page} />
+            </div>
           </div>
+          <div className="flex justify-end">
+            <div className="w-[85%] min-h-screen right-0">
+              <FoodOrderContextProvider>{children}</FoodOrderContextProvider>
+            </div>
+          </div>
+
           <div className=" fixed top-10 right-10">
             <Pfp response={response} loading={loading} logout={logout} />
           </div>

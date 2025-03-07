@@ -35,7 +35,7 @@ export default function Orders() {
   );
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="">
       <div className="fixed top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
         {response && (
           <div>

@@ -1,3 +1,4 @@
+"use client";
 import Navigaion from "../_components/home-navigations";
 import Categories from "../_components/home-categories";
 import Footer from "../_components/home-footer";
@@ -9,20 +10,14 @@ import UserFoodCard, {
 } from "../_components/_reusable/user-food-card";
 import Section from "../_components/_reusable/section";
 import { FoodCategory } from "@prisma/client";
-type Props = {
-  params: Promise<{
-    category_id: string;
-  }>;
-};
-export default async function App({ params }: Props) {
-  const { category_id } = await params;
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_URL}/FoodCategory`,
-    {
-      method: "GET",
-    }
-  );
-  const categories: CustomCategory[] = await response.json();
+import { useCategoriesContext } from "../_components/contexts/categoriesContext";
+import { useParams } from "next/navigation";
+import Loading from "../_components/loading";
+
+export default function App() {
+  const { AllCategories } = useCategoriesContext();
+
+  const { category_id } = useParams();
   return (
     <div>
       <div className="bg-neutral-700 min-h-screen relative">
@@ -33,34 +28,42 @@ export default async function App({ params }: Props) {
           Admin
         </Link>
         <Navigaion />
-        <div className="p-20">
-          <div>
-            {categories ? (
-              categories.map((category: CustomCategory) => (
-                <Link href={`/${category.id}`} key={category.id}>
-                  <CategoryBadge
-                    category={category}
-                    categoryFromParams={category_id}
-                  />
-                </Link>
-              ))
-            ) : (
-              <div>Loading</div>
-            )}
-          </div>
+        {typeof category_id === "string" ? (
+          <div className="p-20 justify-items-center">
+            <div className="flex whitespace-nowrap flex-wrap justify-center w-[80%]">
+              {AllCategories ? (
+                AllCategories.map((category: CustomCategory) => (
+                  <Link href={`/${category.id}`} key={category.id}>
+                    <CategoryBadge
+                      category={category}
+                      categoryFromParams={category_id}
+                    />
+                  </Link>
+                ))
+              ) : (
+                <div>Loading</div>
+              )}
+            </div>
 
-          <div className="categories w-[90%] flex flex-wrap gap-10 my-10">
-            {categories ? (
-              categories.map((category) => {
-                if (category_id === category.id) {
-                  return <Section key={category.id} category={category} />;
-                }
-              })
-            ) : (
-              <div>Loading</div>
-            )}
+            <div className="categories w-[90%] flex flex-wrap gap-10 my-10">
+              {AllCategories ? (
+                AllCategories.map((category) => {
+                  if (category_id === category.id) {
+                    return (
+                      <div key={category.id}>
+                        <Section key={category.id} category={category} />
+                      </div>
+                    );
+                  }
+                })
+              ) : (
+                <div>Loading</div>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <Loading />
+        )}
       </div>
       <Footer />
     </div>
