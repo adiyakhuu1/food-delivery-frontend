@@ -48,7 +48,6 @@ export const FoodOrderContextProvider = ({
     };
     fetchData();
   }, [changeV3]);
-  console.log(loading);
 
   return (
     <foodOrderContext.Provider
